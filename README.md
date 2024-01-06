@@ -9,8 +9,10 @@ Main feature/style:
 ## Installation
 Simply run:
 ```bash
-git clone https://github.com/clsty/dots-hyprarch
-./dots-hyprarch/setup.sh
+t=~/dotfiles # Or anywhere else you'd like
+mkdir -p $t
+git clone https://github.com/clsty/dots-hyprarch $t
+$t/setup.sh
 ```
 And follow the instructions of the script `setup.sh`.
 
@@ -60,7 +62,9 @@ string "org.mpris.MediaPlayer2.plasma-browser-integration"
 note that `string "org.mpris.MediaPlayer2.firefox.instance_1_37"` does NOT work.
 
 If for some reason, firefox still does not have dbus `org.mpris.MediaPlayer2.plasma-browser-integration` showing up,
-consider creating a new profile using `firefox --ProfileManager` and install the Plasma Integration extension again,
-restart firefox with the new profile and try again.
+consider the following steps:
+1. Create a new profile using `firefox --ProfileManager`.
+2. Launch firefox with the newprofile and install the Plasma Integration extension again.
+3. Restart firefox with the new profile and try again.
 
 Note: `playerctl -F metadata` may also be helpful for debugging.
