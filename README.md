@@ -16,6 +16,9 @@ $t/setup.sh
 ```
 And follow the instructions of the script `setup.sh`.
 
+> [!WARNING]
+> Uninstallation script is NOT provided. See FAQ.
+
 ## Launch
 Basically, login to tty and launch the wrapper script `~/.local/bin/wrp-hyprland`.
 
@@ -68,3 +71,16 @@ consider the following steps:
 3. Restart firefox with the new profile and try again.
 
 Note: `playerctl -F metadata` may also be helpful for debugging.
+# Uninstallation script is NOT provided, why?
+Because it's very hard to make a proper uninstallation script,
+which should revert all changes made by the installation script.
+
+However, it's very hard to know what command will exactly make the reverted changes.
+
+For example, the installation script will install `yay` (AUR-helper) for you if you don't have one.
+However, what should the uninstallation script do to revert this changes?
+Remove `yay` or `yay-bin`? Not proper, because you may already have one of them installed by yourself (NOT by the installation script).
+And, even if the installation script had logged the package list installed by the script, it's still not proper to remove `yay` or `yay-bin` when the log showed `yay` or `yay-bin` is installed by the script, because you may have other programs using `yay` and this removal will break their functions.
+
+In conclusion, it's nearly not possible to write a proper uninstallation script.
+You'd better make reverted changes manually as you need.
