@@ -84,3 +84,5 @@ And, even if the installation script had logged the package list installed by th
 
 In conclusion, it's nearly not possible to write a proper uninstallation script.
 You'd better make reverted changes manually as you need.
+
+> Wait, it might still be partly possible by creating a PKGBUILD and make the dotfiles as a package for pacman... Maybe implement this some other day.
