@@ -59,7 +59,7 @@ should at least return
 ```plain
 string "org.mpris.MediaPlayer2.plasma-browser-integration"
 ```
-note that `string "org.mpris.MediaPlayer2.firefox.instance_1_37"` does NOT work.
+note that output like `string "org.mpris.MediaPlayer2.firefox.instance_1_37"` does NOT work.
 
 If for some reason, firefox still does not have dbus `org.mpris.MediaPlayer2.plasma-browser-integration` showing up,
 consider the following steps:
