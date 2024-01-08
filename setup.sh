@@ -4,16 +4,16 @@ export base="$(pwd)"
 
 function try { "$@" || sleep 0; }
 function v() {
-  echo -e "\e[34m[$0]: Next command to be executed:\e[0m"
+  echo -e "\e[34m[$0]: Next command:\e[0m"
   echo -e "\e[32m$@\e[0m"
   execute=true
   if $ask;then
     while true;do
-      echo -e "\e[34mDo you want to execute the command shown above? \e[0m"
+      echo -e "\e[34mExecute the command above? \e[0m"
       echo "  y = Yes"
       echo "  e = Exit now"
       echo "  s = Skip this command; NOT recommended (may break functions needed by the dotfiles!)"
-      echo "  yesforall = yes and don't ask again; NOT recommended unless you really sure"
+      echo "  yesforall = Yes and don't ask again; NOT recommended unless you really sure"
       read -p "Enter here [y/e/s/yesforall]: " p
       case $p in
         [yY]) echo -e "\e[34mOK, executing...\e[0m" ;break ;;
@@ -78,7 +78,7 @@ printf "Enter capital \"YES\" (without quotes) to continue:"
 read -p " " p
 case $p in "YES")sleep 0;; *)exit;;esac
 printf '\n'
-printf 'Do you want to confirm everytime before a command executes?\n'
+printf 'Do you want to confirm every time before a command executes?\n'
 printf '  y = Yes, ask me before executing each of them. (RECOMMENDED)\n'
 printf '  n = No, just execute them automatically.\n'
 printf '  a = Abort. (DEFAULT)\n'
