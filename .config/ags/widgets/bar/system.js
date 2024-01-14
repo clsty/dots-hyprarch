@@ -1,10 +1,10 @@
 // This is for the right pill of the bar. 
 // For the cool memory indicator on the sidebar, see sysinfo.js
-import { Service, Utils, Widget } from '../../imports.js';
+import Widget from 'resource:///com/github/Aylur/ags/widget.js';
+import * as Utils from 'resource:///com/github/Aylur/ags/utils.js';
 const { Box, Label, Button, Overlay, Revealer, Scrollable, Stack, EventBox } = Widget;
 const { exec, execAsync } = Utils;
 const { GLib } = imports.gi;
-import Hyprland from 'resource:///com/github/Aylur/ags/service/hyprland.js';
 import Battery from 'resource:///com/github/Aylur/ags/service/battery.js';
 import { MaterialIcon } from '../../lib/materialicon.js';
 import { AnimatedCircProg } from "../../lib/animatedcircularprogress.js";
@@ -13,7 +13,7 @@ const BATTERY_LOW = 20;
 
 const BatBatteryProgress = () => {
     const _updateProgress = (circprog) => { // Set circular progress value
-        circprog.css = `font-size: ${Battery.percent}px;`
+        circprog.css = `font-size: ${Math.abs(Battery.percent)}px;`
 
         circprog.toggleClassName('bar-batt-circprog-low', Battery.percent <= BATTERY_LOW);
         circprog.toggleClassName('bar-batt-circprog-full', Battery.charged);
@@ -21,9 +21,9 @@ const BatBatteryProgress = () => {
     return AnimatedCircProg({
         className: 'bar-batt-circprog',
         vpack: 'center', hpack: 'center',
-        connections: [
-            [Battery, _updateProgress],
-        ],
+        extraSetup: (self) => self
+            .hook(Battery, _updateProgress)
+        ,
     })
 }
 
@@ -34,7 +34,7 @@ const BarClock = () => Widget.Box({
         Widget.Label({
             className: 'bar-clock',
             label: GLib.DateTime.new_now_local().format("%H:%M:%S"),
-            setup: (self) => self.poll(5000, label => {
+            setup: (self) => self.poll(1000, label => {
                 label.label = GLib.DateTime.new_now_local().format("%H:%M:%S");
             }),
         }),
@@ -147,13 +147,6 @@ const BarResource = (name, icon, command) => {
     const resourceCircProg = AnimatedCircProg({
         className: 'bar-batt-circprog',
         vpack: 'center', hpack: 'center',
-        connections: [[5000, (progress) => execAsync(['bash', '-c', command])
-            .then((output) => {
-                progress.css = `font-size: ${Number(output)}px;`;
-                resourceLabel.label = `${Math.round(Number(output))}%`;
-                widget.tooltipText = `${name}: ${Math.round(Number(output))}%`;
-            }).catch(print)
-        ]],
     });
     const widget = Box({
         className: 'spacing-h-4 txt-onSurfaceVariant',
@@ -170,7 +163,15 @@ const BarResource = (name, icon, command) => {
                 }),
                 overlays: [resourceCircProg]
             }),
-        ]
+        ],
+        setup: (self) => self
+            .poll(5000, () => execAsync(['bash', '-c', command])
+                .then((output) => {
+                    resourceCircProg.css = `font-size: ${Number(output)}px;`;
+                    resourceLabel.label = `${Math.round(Number(output))}%`;
+                    widget.tooltipText = `${name}: ${Math.round(Number(output))}%`;
+                }).catch(print))
+        ,
     });
     return widget;
 }
@@ -185,9 +186,18 @@ const BarGroup = ({ child }) => Widget.Box({
     ]
 });
 
+const moveToRelativeWorkspace = async (self, num) => {
+    try {
+        const Hyprland = (await import('resource:///com/github/Aylur/ags/service/hyprland.js')).default;
+        Hyprland.sendMessage(`dispatch workspace ${num > 0 ? '+' : ''}${num}`);
+    } catch {
+        console.log(`TODO: Sway workspace ${num > 0 ? '+' : ''}${num}`);
+    }
+}
+
 export const ModuleSystem = () => Widget.EventBox({
-    onScrollUp: () => Hyprland.sendMessage(`dispatch workspace -1`),
-    onScrollDown: () => Hyprland.sendMessage(`dispatch workspace +1`),
+    onScrollUp: (self) => moveToRelativeWorkspace(self, -1),
+    onScrollDown: (self) => moveToRelativeWorkspace(self, +1),
     onPrimaryClick: () => App.toggleWindow('sideright'),
     child: Widget.Box({
         className: 'spacing-h-5',

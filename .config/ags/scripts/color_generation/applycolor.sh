@@ -134,7 +134,7 @@ apply_gtk() { # Using gradience-cli
     # (which is unreadable when broken when you use dark mode)
     if [ "$lightdark" = "-l" ]; then
         gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3'
-        gsettings set org.gnome.desktop.interface color-scheme 'default'
+        gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
     else
         gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-dark
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
@@ -147,7 +147,6 @@ apply_ags() {
     ags run-js "App.resetCss(); App.applyCss('${HOME}/.config/ags/style.css');"
 }
 
-# apply_svgs
 apply_ags &
 apply_hyprland &
 apply_gtk &

@@ -12,7 +12,7 @@ export const Applications = await service('applications');
 export const Audio = await service('audio');
 export const Battery = await service('battery');
 export const Bluetooth = await service('bluetooth');
-export const Hyprland = await service('hyprland');
+// export const Hyprland = await service('hyprland');
 export const Mpris = await service('mpris');
 export const Network = await service('network');
 export const Notifications = await service('notifications');
@@ -29,7 +29,7 @@ globalThis['Utils'] = Utils; ///////////////////////////
 // globalThis['Bluetooth'] = Bluetooth;
 // globalThis['Hyprland'] = Hyprland;
 globalThis['Mpris'] = Mpris;
-// globalThis['Network'] = Network;
+globalThis['Network'] = Network;
 globalThis['Notifications'] = Notifications;
 // globalThis['SystemTray'] = SystemTray;
 

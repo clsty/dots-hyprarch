@@ -4,6 +4,7 @@ export base="$(pwd)"
 
 function try { "$@" || sleep 0; }
 function v() {
+  echo -e "\e[34m//////////////////////////////\e[0m"
   echo -e "\e[34m[$0]: Next command:\e[0m"
   echo -e "\e[32m$@\e[0m"
   execute=true
@@ -173,6 +174,18 @@ install-Gabarito (){
   x fc-cache -fv
   x cd $base
 }
+install-OneUI (){
+  x mkdir -p $base/cache/OneUI4-Icons
+  x cd $base/cache/OneUI4-Icons
+  try git init -b main
+  try git remote add origin https://github.com/mjkim0727/OneUI4-Icons.git
+  x git pull origin main && git submodule update --init --recursive
+  x sudo mkdir -p /usr/local/share/icons
+  x sudo cp -r OneUI /usr/local/share/icons
+  x sudo cp -r OneUI-dark /usr/local/share/icons
+  x sudo cp -r OneUI-light /usr/local/share/icons
+  x cd $base
+}
 
 if command -v ags >/dev/null 2>&1;then
   echo -e "\e[33m[$0]: Command \"ags\" already exists, no need to install.\e[0m"
@@ -197,6 +210,14 @@ if $(fc-list|grep -q Gabarito); then
 else ask_Gabarito=true
 fi
 if $ask_Gabarito;then showfun install-Gabarito;v install-Gabarito;fi
+
+if $(test -d /usr/local/share/icons/OneUI); then
+  echo -e "\e[33m[$0]: Icon pack \"OneUI\" already exists, no need to install.\e[0m"
+  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
+  ask_OneUI=$ask
+else ask_OneUI=true
+fi
+if $ask_OneUI;then showfun install-OneUI;v install-OneUI;fi
 #####################################################################################
 printf "\e[36m[$0]: 3. Copying\e[97m\n"
 

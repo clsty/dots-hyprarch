@@ -1,72 +1,87 @@
 // This file is for brightness/volume indicators
-const { GLib, Gtk } = imports.gi;
-import { App, Service, Utils, Widget } from '../../imports.js';
+import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 import Audio from 'resource:///com/github/Aylur/ags/service/audio.js';
 const { Box, Label, ProgressBar, Revealer } = Widget;
 import { MarginRevealer } from '../../lib/advancedwidgets.js';
 import Brightness from '../../services/brightness.js';
 import Indicator from '../../services/indicator.js';
 
-const OsdValue = (name, labelConnections, progressConnections, props = {}) => Box({ // Volume
-    ...props,
-    vertical: true,
-    className: 'osd-bg osd-value',
-    hexpand: true,
-    children: [
-        Box({
-            vexpand: true,
-            children: [
-                Label({
-                    xalign: 0, yalign: 0, hexpand: true,
-                    className: 'osd-label',
-                    label: `${name}`,
-                }),
-                Label({
-                    hexpand: false, className: 'osd-value-txt',
-                    label: '100',
-                    connections: labelConnections,
-                }),
-            ]
-        }),
-        ProgressBar({
-            className: 'osd-progress',
-            hexpand: true,
-            vertical: false,
-            connections: progressConnections,
-        })
-    ],
-});
+const OsdValue = (name, labelSetup, progressSetup, props = {}) => {
+    const valueName = Label({
+        xalign: 0, yalign: 0, hexpand: true,
+        className: 'osd-label',
+        label: `${name}`,
+    });
+    const valueNumber =Label({
+        hexpand: false, className: 'osd-value-txt',
+        setup: labelSetup,
+    });
+    return Box({ // Volume
+        ...props,
+        vertical: true,
+        hexpand: true,
+        className: 'osd-bg osd-value',
+        attribute: {
+            'disable': () => {
+                valueNumber.label = '󰖭';
+            }
+        },
+        children: [
+            Box({
+                vexpand: true,
+                children: [
+                    valueName,
+                    valueNumber,
+                ]
+            }),
+            ProgressBar({
+                className: 'osd-progress',
+                hexpand: true,
+                vertical: false,
+                setup: progressSetup,
+            })
+        ],
+    });
+}
 
 const brightnessIndicator = OsdValue('Brightness',
-    [[Brightness, self => {
-        self.label = `${Math.round(Brightness.screen_value * 100)}`;
-    }, 'notify::screen-value']],
-    [[Brightness, (progress) => {
-        const updateValue = Brightness.screen_value;
-        progress.value = updateValue;
-    }, 'notify::screen-value']],
+    (self) => self
+        .hook(Brightness, self => {
+            self.label = `${Math.round(Brightness.screen_value * 100)}`;
+        }, 'notify::screen-value')
+    ,
+    (self) => self
+        .hook(Brightness, (progress) => {
+            const updateValue = Brightness.screen_value;
+            progress.value = updateValue;
+        }, 'notify::screen-value')
+    ,
 )
 
 const volumeIndicator = OsdValue('Volume',
-    [[Audio, (label) => {
-        label.label = `${Math.round(Audio.speaker?.volume * 100)}`;
-    }]],
-    [[Audio, (progress) => {
-        const updateValue = Audio.speaker?.volume;
-        if (!isNaN(updateValue)) progress.value = updateValue;
-    }]],
+    (self) => self
+        .hook(Audio, (label) => {
+            label.label = `${Math.round(Audio.speaker?.volume * 100)}`;
+        })
+    ,
+    (self) => self
+        .hook(Audio, (progress) => {
+            const updateValue = Audio.speaker?.volume;
+            if (!isNaN(updateValue)) progress.value = updateValue;
+        })
+    ,
 );
 
 export default () => MarginRevealer({
     transition: 'slide_down',
     showClass: 'osd-show',
     hideClass: 'osd-hide',
-    connections: [
-        [Indicator, (revealer, value) => {
-            if(value > -1) revealer._show();
-            else revealer._hide();
-        }, 'popup'],
-    ],
+    extraSetup: (self) => self
+        .hook(Indicator, (revealer, value) => {
+            if (value > -1) revealer.attribute.show();
+            else revealer.attribute.hide();
+        }, 'popup')
+    ,
     child: Box({
         hpack: 'center',
         vertical: false,
