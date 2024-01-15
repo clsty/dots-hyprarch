@@ -19,8 +19,10 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 # export WLR_DRM_NO_ATOMIC=1
 export LIBSEAT_BACKEND=logind
 
-# Fix craches on latest version (If yours don't crach then you don't need this)
-export MOZ_ENABLE_WAYLAND=false
+# Try fix craches on latest version (If yours don't crach then you don't need this)
+# Also it's maybe your kernel version or other pkgs not new... idk
+# I only experienced this once. I fully upgraded everything (including hyprland-git, linux kernel and ags) and firefox stops crashing finally.
+#export MOZ_ENABLE_WAYLAND=false
 
 exec Hyprland
 
