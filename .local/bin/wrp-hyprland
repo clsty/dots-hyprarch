@@ -22,7 +22,7 @@ export LIBSEAT_BACKEND=logind
 # Try fix craches on latest version (If yours don't crach then you don't need this)
 # Also it's maybe your kernel version or other pkgs not new... idk
 # I only experienced this once. I fully upgraded everything (including hyprland-git, linux kernel and ags) and firefox stops crashing finally.
-#export MOZ_ENABLE_WAYLAND=false
+export MOZ_ENABLE_WAYLAND=false
 
 exec Hyprland
 
