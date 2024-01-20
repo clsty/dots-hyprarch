@@ -1,4 +1,6 @@
 #!/bin/sh
+# Some variables here may be occupied after Hyprland launch (eg. MOZ_ENABLE_WAYLAND=1 will be specified),
+# In that case, put env=VAR,VALUE in ~/.config/hypr/execs.conf instead.
 
 cd ~
 
@@ -18,11 +20,6 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 # export WLR_NO_HARDWARE_CURSORS=1 # Uncomment this if your cursor disappears
 # export WLR_DRM_NO_ATOMIC=1
 export LIBSEAT_BACKEND=logind
-
-# Try fix craches on latest version (If yours don't crach then you don't need this)
-# Also it's maybe your kernel version or other pkgs not new... idk
-# I only experienced this once. I fully upgraded everything (including hyprland-git, linux kernel and ags) and firefox stops crashing finally.
-export MOZ_ENABLE_WAYLAND=false
 
 exec Hyprland
 
