@@ -33,9 +33,9 @@ const BarClock = () => Widget.Box({
     children: [
         Widget.Label({
             className: 'bar-clock',
-            label: GLib.DateTime.new_now_local().format("%H:%M"),
-            setup: (self) => self.poll(5000, label => {
-                label.label = GLib.DateTime.new_now_local().format("%H:%M");
+            label: GLib.DateTime.new_now_local().format("%H:%M:%S"),
+            setup: (self) => self.poll(1000, label => {
+                label.label = GLib.DateTime.new_now_local().format("%H:%M:%S");
             }),
         }),
         Widget.Label({
@@ -44,9 +44,9 @@ const BarClock = () => Widget.Box({
         }),
         Widget.Label({
             className: 'txt-smallie',
-            label: GLib.DateTime.new_now_local().format("%A, %d/%m"),
+            label: GLib.DateTime.new_now_local().format("%A, %m-%d"),
             setup: (self) => self.poll(5000, label => {
-                label.label = GLib.DateTime.new_now_local().format("%A, %d/%m");
+                label.label = GLib.DateTime.new_now_local().format("%A, %m-%d");
             }),
         }),
     ],
