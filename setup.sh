@@ -130,11 +130,11 @@ else
   v yay -S --needed --noconfirm "${pkglist[*]}"
 fi
 
-v sudo usermod -aG video "$(whoami)"
-v sudo usermod -aG input "$(whoami)"
+v sudo usermod -aG video,input "$(whoami)"
+v hyprshade install && systemctl --user enable --now hyprshade.timer
 
 #####################################################################################
-printf "\e[36m[$0]: 2. Installing AGS and fonts from git repo\e[97m\n"
+printf "\e[36m[$0]: 2. Installing parts from source repo\e[97m\n"
 sleep 1
 
 install-ags (){
@@ -248,4 +248,5 @@ v rsync -av ".local/bin/" "$HOME/.local/bin/"
 
 #####################################################################################
 printf "\e[36m[$0]: Finished. See the \"import-manually\" folder and grab anything you need.\e[97m\n"
-printf "\e[36mPress \e[30m\e[46m Super+Shift+/ \e[0m\e[36m for a list of keybinds\e[97m\n"
+printf "\e[36mPress \e[30m\e[46m Super+Shift+/ \e[0m\e[36m for a list of keybinds.\e[97m\n"
+printf "\e[36mEdit \e[36m\e[40m ~/.config/hypr/hyprshade.toml \e[0m\e[36m for screen shader configuration.\e[97m\n"
