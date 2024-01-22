@@ -246,6 +246,8 @@ test -f $target || { \
 # since the files here come from different places, not only about one program.
 v rsync -av ".local/bin/" "$HOME/.local/bin/"
 
+# Prevent hyprland from not fully loaded
+sleep 2&&hyprctl reload
 #####################################################################################
 printf "\e[36m[$0]: Finished. See the \"import-manually\" folder and grab anything you need.\e[97m\n"
 printf "\e[36mPress \e[30m\e[46m Super+Shift+/ \e[0m\e[36m for a list of keybinds.\e[97m\n"
