@@ -6,7 +6,7 @@ case $dotsdebug in true)sleep 0;; *)exit 1;;esac
 # Some Ideas:
 # Make use of getopt(s) to provide more options
 # Use vt100 features to provide a more controllable interface (eg. show total progress at the bottom of terminal during installation)
-# Provide a 
+# Provide an interface to choose options (eg. install, auto install, update components, uninstall)
 # i18n
 #
 
