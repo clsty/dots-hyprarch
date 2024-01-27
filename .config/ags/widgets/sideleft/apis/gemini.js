@@ -14,6 +14,7 @@ import { markdownTest } from '../../../lib/md2pango.js';
 import { MarginRevealer } from '../../../lib/advancedwidgets.js';
 
 Gtk.IconTheme.get_default().append_search_path(`${App.configDir}/assets`);
+const MODEL_NAME = `Gemini`;
 
 export const geminiTabIcon = Icon({
     hpack: 'center',
@@ -48,7 +49,7 @@ const GeminiInfo = () => {
                 className: 'txt txt-title-small sidebar-chat-welcome-txt',
                 wrap: true,
                 justify: Gtk.Justification.CENTER,
-                label: 'Assistant (Gemini)',
+                label: 'Assistant (Gemini Pro)',
             }),
             Box({
                 className: 'spacing-h-5',
@@ -110,8 +111,8 @@ export const GeminiSettings = () => MarginRevealer({
                 children: [
                     ConfigToggle({
                         icon: 'description',
-                        name: 'Assistant prompt',
-                        desc: 'Tells Gemini to be brief,\nuse bullet points, and let\nit know it\'s a sidebar assistant',
+                        name: 'Enhancements',
+                        desc: 'Tells Gemini:\n- It\'s a Linux sidebar assistant\n- Be brief and use bullet points',
                         initValue: Gemini.assistantPrompt,
                         onChange: (self, newValue) => {
                             Gemini.assistantPrompt = newValue;
@@ -171,7 +172,7 @@ export const chatContent = Box({
         .hook(Gemini, (box, id) => {
             const message = Gemini.messages[id];
             if (!message) return;
-            box.add(ChatMessage(message, 'Gemini'))
+            box.add(ChatMessage(message, MODEL_NAME))
         }, 'newMsg')
     ,
 });

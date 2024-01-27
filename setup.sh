@@ -103,7 +103,7 @@ v mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
 # original dotfiles and new ones in the SAME DIRECTORY
 # (eg. in ~/.config/hypr) won't be mixed together
 
-for i in .config/* .local/share/*
+for i in .config/*
 do
   echo "[$0]: Found target: $i"
   if [ -d "$i" ];then v rsync -av --delete "$i/" "$HOME/$i/"
@@ -118,7 +118,13 @@ test -f $target || { \
 
 # some foldes (eg. .local/bin) should be processed seperately to avoid `--delete' for rsync,
 # since the files here come from different places, not only about one program.
-v rsync -av ".local/bin/" "$HOME/.local/bin/"
+for i in .local/bin .local/share/*
+do
+  echo "[$0]: Found target: $i"
+  if [ -d "$i" ];then v rsync -av "$i/" "$HOME/$i/"
+  elif [ -f "$i" ];then v rsync -av "$i" "$HOME/$i"
+  fi
+done
 
 # Prevent hyprland from not fully loaded
 sleep 2&&hyprctl reload

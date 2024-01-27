@@ -11,8 +11,11 @@ const OptionalWorkspaces = async () => {
     try {
         return (await import('./workspaces_hyprland.js')).default();
     } catch {
-        // return (await import('./workspaces_sway.js')).default();
-        return null;
+        try {
+            return (await import('./workspaces_sway.js')).default();
+        } catch {
+            return null;
+        }
     }
 };
 
@@ -33,7 +36,10 @@ export const Bar = async (monitor = 0) => {
             className: 'spacing-h-4',
             children: [
                 SideModule([Music()]),
-                await OptionalWorkspaces(),
+                Widget.Box({
+                    homogeneous: true,
+                    children: [await OptionalWorkspaces()],
+                }),
                 SideModule([System()]),
             ]
         }),

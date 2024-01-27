@@ -71,7 +71,7 @@ consider the following steps:
 3. Restart firefox with the new profile and try again.
 
 Note: `playerctl -F metadata` may also be helpful for debugging.
-# Uninstallation script is NOT provided, why?
+### Uninstallation script is NOT provided, why?
 Because it's very hard to make a proper uninstallation script,
 which should revert all changes made by the installation script.
 
@@ -86,3 +86,8 @@ In conclusion, it's nearly not possible to write a proper uninstallation script.
 You'd better make reverted changes manually as you need.
 
 > Wait, it might still be partly possible by creating a PKGBUILD and make the dotfiles as a package for pacman... Maybe implement this some other day.
+
+### Firefox sometimes crashes
+When this happens, please use `(xWayland) Firefox`, which desktop file is provided in `~/.local/share/applications` with `env MOZ_ENABLE_WAYLAND=0` for `Exec` entry.
+
+This is just a workround, which makes Firefox running under xWayland.
