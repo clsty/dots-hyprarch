@@ -91,3 +91,18 @@ You'd better make reverted changes manually as you need.
 When this happens, please use `(xWayland) Firefox`, which desktop file is provided in `~/.local/share/applications` with `env MOZ_ENABLE_WAYLAND=0` for `Exec` entry.
 
 This is just a workround, which makes Firefox running under xWayland.
+
+### ags installation failed
+#### `PermissionError: [Errno 13] Permission denied: '/usr/local/lib/libgvc.so'`
+Run:
+```bash
+pacman -Qo /usr/local/lib/libgvc.so
+```
+to check whether this file belongs to any package (very likely not, because it's inside `/usr/local`).
+
+If not, then it's probably safe to just remove it. If you're sure about that, run this:
+```bash
+sudo mv /usr/local/lib/libgvc.so /tmp/
+```
+#### Other errors
+Delete `./cache/ags` and install it again.
