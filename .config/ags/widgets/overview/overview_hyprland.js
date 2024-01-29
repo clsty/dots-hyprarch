@@ -13,7 +13,7 @@ import { dumpToWorkspace, swapWorkspace } from "./actions.js";
 const OVERVIEW_SCALE = 0.18; // = overview workspace box / screen size
 const OVERVIEW_WS_NUM_SCALE = 0.09;
 const OVERVIEW_WS_NUM_MARGIN_SCALE = 0.07;
-const NUM_WS_GROUPS = 3;
+const NUM_WS_GROUPS= 10;
 const NUM_OF_WORKSPACES_PER_GROUP = 10;
 const TARGET = [Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.SAME_APP, 0)];
 
