@@ -106,3 +106,14 @@ sudo mv /usr/local/lib/libgvc.so /tmp/
 ```
 #### Other errors
 Delete `./cache/ags` and install it again.
+
+### How to resize | set resolution | font size
+Reference: <https://github.com/end-4/dots-hyprland/issues/180#issuecomment-1880385893>
+
+You can use gsettings to change the font size, like this:
+```bash
+gsettings set org.gnome.desktop.interface font-name 'Rubik 9'
+```
+Rubik here is the font name and 9 is the font size in pt (1pt = 1.3333 px)
+
+Stuff should scale according to the font size. Some ags element may need a restart of ags to take effect.
