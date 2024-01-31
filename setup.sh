@@ -127,6 +127,10 @@ do
   fi
 done
 
+# Prevent welcome msg from popping up for the first time because it use `hyprctl keyword bind'.
+# See .config/ags/services/messages.js
+echo 'Just a file to confirm that you have been greeted ;)' > ~/.cache/ags/user/firstrun.txt
+
 # Prevent hyprland from not fully loaded
 sleep 2&&hyprctl reload
 #####################################################################################
