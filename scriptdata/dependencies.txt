@@ -10,3 +10,4 @@ wayland-idle-inhibitor-git swayidle swaylock-effects-git wlogout upower
 wl-clipboard hyprpicker-git grim tesseract slurp cliphist wf-recorder swappy
 fontconfig lexend-fonts-git ttf-jetbrains-mono-nerd ttf-material-symbols-variable-git ttf-space-mono-nerd
 tilix zsh foot
+xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland-git
