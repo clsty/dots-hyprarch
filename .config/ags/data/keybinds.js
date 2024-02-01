@@ -14,11 +14,12 @@ export const keybindList = [[
             // Swap windows #####
             { "keys": ["s-S-", "hjkl"], "action": "Swap to" },
             // Window split ratio #####
-            { "keys": ["s-A-", "hjkl"], "action": "Alter split -/+" },
+            { "keys": ["s-A-", "hjkl"], "action": "Resize" },
             // Misc #####
             { "keys": ["s-", "X"], "action": "Kill" },
-            { "keys": ["s-A-S-", "X"], "action": "hyprctl Kill" },
+            { "keys": ["s-S-", "X"], "action": "hyprctl Kill" },
             { "keys": ["s-A-", "Space"], "action": "floating" },
+            { "keys": ["s-", ";"], "action": "switch split" },
             { "keys": ["s-", "F"], "action": "Fullscr" },
             { "keys": ["s-A-", "F"], "action": "fake Fullscr" },
             { "keys": ["s-", "Z"], "action": "move by cursor" },
@@ -36,7 +37,7 @@ export const keybindList = [[
         "binds": [
             // goto #####
             { "keys": ["s-", "num #"], "action": "WS #" },
-            { "keys": ["s-", "S"], "action": "Special WS" },
+            { "keys": ["s-", "`"], "action": "Special WS" },
             { "keys": ["s-", "Scroll"], "action": "WS -1/+1" },
             { "keys": ["s-", "[ ]"], "action": "WS -1/+1" },
         ],
@@ -48,7 +49,7 @@ export const keybindList = [[
         "binds": [
             // Move #####
             { "keys": ["s-S-", "num #"], "action": "WS #" },
-            { "keys": ["s-S-", "S"], "action": "Special WS" },
+            { "keys": ["s-S-", "`"], "action": "Special WS" },
             { "keys": ["s-S-", "Scroll"], "action": "WS -1/+1" },
             { "keys": ["s-S-", "[ ]"], "action": "WS -1/+1" },
         ],
