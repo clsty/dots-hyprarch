@@ -1,10 +1,10 @@
 [Desktop Entry]
 Version=1.0
-Name=(Wayland) Firefox
-Comment=(Wayland) Browse the World Wide Web
+Name=(xWayland) Firefox
+Comment=(xWayland) Browse the World Wide Web
 GenericName=Web Browser
 Keywords=Internet;WWW;Browser;Web;Explorer
-Exec=env MOZ_ENABLE_WAYLAND=1 /usr/lib/firefox/firefox %u
+Exec=env MOZ_ENABLE_WAYLAND=0 /usr/lib/firefox/firefox %u
 Icon=firefox
 Terminal=false
 Type=Application
@@ -17,12 +17,12 @@ StartupWMClass=firefox
 
 [Desktop Action new-window]
 Name=Open a New Window
-Exec=env MOZ_ENABLE_WAYLAND=1 /usr/lib/firefox/firefox --new-window %u
+Exec=env MOZ_ENABLE_WAYLAND=0 /usr/lib/firefox/firefox --new-window %u
 
 [Desktop Action new-private-window]
 Name=Open a New Private Window
-Exec=env MOZ_ENABLE_WAYLAND=1 /usr/lib/firefox/firefox --private-window %u
+Exec=env MOZ_ENABLE_WAYLAND=0 /usr/lib/firefox/firefox --private-window %u
 
 [Desktop Action profile-manager-window]
 Name=Open the Profile Manager
-Exec=env MOZ_ENABLE_WAYLAND=1 /usr/lib/firefox/firefox --ProfileManager
+Exec=env MOZ_ENABLE_WAYLAND=0 /usr/lib/firefox/firefox --ProfileManager
