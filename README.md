@@ -117,3 +117,15 @@ gsettings set org.gnome.desktop.interface font-name 'Rubik 9'
 Rubik here is the font name and 9 is the font size in pt (1pt = 1.3333 px)
 
 Stuff should scale according to the font size. Some ags element may need a restart of ags to take effect.
+
+### How to change time format
+Reference: <https://github.com/end-4/dots-hyprland/issues/228>
+
+**NOTE**: You may need to run `man date` for time format.
+
+For AGS bar (it's not a dock bar I guess), you should edit `~/.config/ags/widgets/bar/system.js`.
+Find `"%H:%M"` there and change it to what you like.
+Its format may refer to [this page](https://docs.gtk.org/glib/method.DateTime.format.html).
+
+The lockscreen is swaylock currently. Edit its config in `~/.config/swaylock/config` to suit your needs.
+For time format you need to adjust `timestr`.
