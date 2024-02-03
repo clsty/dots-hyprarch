@@ -6,7 +6,8 @@ cd ~
 
 ## IME
 # See https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland
-export GTK_IM_MODULE=wayland
+# export GTK_IM_MODULE=wayland # crashes xWayland electron apps
+# export GTK_IM_MODULE=fcitx # Maybe cause issue like https://github.com/end-4/dots-hyprland/issues/222
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 export SDL_IM_MODULE=fcitx
