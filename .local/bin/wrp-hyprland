@@ -5,7 +5,8 @@
 cd ~
 
 ## IME
-export GTK_IM_MODULE=fcitx
+# See https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland
+export GTK_IM_MODULE=wayland
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 export SDL_IM_MODULE=fcitx

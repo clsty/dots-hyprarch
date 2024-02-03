@@ -17,7 +17,7 @@ $t/setup.sh
 And follow the instructions of the script `setup.sh`.
 
 > [!WARNING]
-> Uninstallation script is NOT provided. See FAQ.
+> Uninstallation script is NOT provided. See FAQ-Whys.
 
 ## Launch
 Basically, login to tty and launch the wrapper script `~/.local/bin/wrp-hyprland`.
@@ -44,9 +44,19 @@ Use `.local/bin/tilix-dconf` to load/dump the Tilix config stored in dconf from/
   - I have also contributed some improvements and fixes there, mainly on the installation scripts.
 - [Aylur/AGS](https://github.com/Aylur/ags/)-powered.
 
+## How to debug
+Here're some hints.
+
+The bar, and the side bars, cheatsheet, etc. belongs to AGS.
+To debug AGS, you may need to run this in shell:
+```bash
+pkill ags;ags
+```
+And see if there're any errors, CRITICALs and WARNINGs.
+
+Also, some common problems are listed in FAQ.
+
 ## FAQ
-### Why use `hyprland-git` from AUR instead of `hyprland` from repo of Arch Linux
-See [end-4/dots-hyprland#158](https://github.com/end-4/dots-hyprland/issues/158).
 ### The player panel does not pop up when there is media playing
 > Reference: [end-4/dots-hyprland#168](https://github.com/end-4/dots-hyprland/issues/168)
 
@@ -71,22 +81,6 @@ consider the following steps:
 3. Restart firefox with the new profile and try again.
 
 Note: `playerctl -F metadata` may also be helpful for debugging.
-### Uninstallation script is NOT provided, why?
-Because it's very hard to make a proper uninstallation script,
-which should revert all changes made by the installation script.
-
-However, it's very hard to know what command will exactly make the reverted changes.
-
-For example, the installation script will install `yay` (AUR-helper) for you if you don't have one.
-However, what should the uninstallation script do to revert this changes?
-Remove `yay` or `yay-bin`? Not proper, because you may already have one of them installed by yourself (NOT by the installation script).
-And, even if the installation script had logged the package list installed by the script, it's still not proper to remove `yay` or `yay-bin` when the log showed `yay` or `yay-bin` is installed by the script, because you may have other programs using `yay` and this removal will break their functions.
-
-In conclusion, it's nearly not possible to write a proper uninstallation script.
-You'd better make reverted changes manually as you need.
-
-> Wait, it might still be partly possible by creating a PKGBUILD and make the dotfiles as a package for pacman... Maybe implement this some other day.
-
 ### Firefox sometimes crashes
 When this happens, please use `(xWayland) Firefox`, which desktop file is provided in `~/.local/share/applications` with `env MOZ_ENABLE_WAYLAND=0` for `Exec` entry.
 
@@ -118,6 +112,8 @@ Rubik here is the font name and 9 is the font size in pt (1pt = 1.3333 px)
 
 Stuff should scale according to the font size. Some ags element may need a restart of ags to take effect.
 
+If some elements are wayy too big, then it's possible that css totally not working, see <https://github.com/end-4/dots-hyprland/issues/226>.
+
 ### How to change time format
 Reference: <https://github.com/end-4/dots-hyprland/issues/228>
 
@@ -134,3 +130,21 @@ For time format you need to adjust `timestr`.
 Reference: <https://github.com/end-4/dots-hyprland/issues/224#issuecomment-1923706599>
 
 Click and hold a notification for a while, and its content will be copied.
+
+## FAQ-Whys
+### Why use `hyprland-git` from AUR instead of `hyprland` from repo of Arch Linux
+See [end-4/dots-hyprland#158](https://github.com/end-4/dots-hyprland/issues/158).
+### Uninstallation script is NOT provided, why?
+Because it's very hard to make a proper uninstallation script,
+which should revert all changes made by the installation script.
+
+For example, the installation script will install `yay` (AUR-helper) for you if you don't have one.
+However, what should the uninstallation script do to revert this changes?
+Remove `yay` or `yay-bin`? Not proper, because you may already have one of them installed by yourself (NOT by the installation script).
+And, even if the installation script had logged the package list installed by the script, it's still not proper to remove `yay` or `yay-bin` when the log showed `yay` or `yay-bin` is installed by the script, because you may have other programs using `yay` and this removal will break their functions.
+
+In conclusion, it's nearly not possible to write a proper uninstallation script.
+You'd better make reverted changes manually as you need.
+
+> Wait, it might still be partly possible by creating a PKGBUILD and make the dotfiles as a package for pacman... Maybe implement this some other day.
+
