@@ -129,3 +129,8 @@ Its format may refer to [this page](https://docs.gtk.org/glib/method.DateTime.fo
 
 The lockscreen is swaylock currently. Edit its config in `~/.config/swaylock/config` to suit your needs.
 For time format you need to adjust `timestr`.
+
+### How to copy text in notification
+Reference: <https://github.com/end-4/dots-hyprland/issues/224#issuecomment-1923706599>
+
+Click and hold a notification for a while, and its content will be copied.
