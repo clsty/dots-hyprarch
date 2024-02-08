@@ -131,6 +131,14 @@ Reference: <https://github.com/end-4/dots-hyprland/issues/224#issuecomment-19237
 
 Click and hold a notification for a while, and its content will be copied.
 
+### How to set city for weather
+Reference: <https://github.com/end-4/dots-hyprland/issues/220#issuecomment-1923793627>
+<https://github.com/end-4/dots-hyprland/commit/c2d3c5bce37dd87f19bf5e13002b2af6e0e1e5eb>
+
+The value will be used as `${city}` for `curl https://wttr.in/lujiang${city}?format=j1`.
+
+By default the value comes from `curl ipinfo.io`.
+You can also manually set the value by setting the env var `$AGS_WEATHER_CITY`.
 ## FAQ-Whys
 ### Why use `hyprland-git` from AUR instead of `hyprland` from repo of Arch Linux
 See [end-4/dots-hyprland#158](https://github.com/end-4/dots-hyprland/issues/158).
