@@ -41,7 +41,7 @@ Use `.local/bin/tilix-dconf` to load/dump the Tilix config stored in dconf from/
 ## Credits
 - The project is largely based on the amazing [end-4/dots-hyprland (branch: illogical_impulse)](https://github.com/end-4/dots-hyprland/tree/illogical-impulse), modified to suit my personal tastes.
   - You may take a look there, as the development there is very active, and there're more branches.
-  - I have also contributed some improvements and fixes there, mainly on the installation scripts.
+  - I have also contributed [some improvements and fixes there](https://github.com/end-4/dots-hyprland/pulls?q=author%3Aclsty+), mainly on the installation scripts and [document site](https://github.com/end-4/dots-hyprland-wiki).
 - [Aylur/AGS](https://github.com/Aylur/ags/)-powered.
 
 ## How to debug
