@@ -134,6 +134,9 @@ echo 'Just a file to confirm that you have been greeted ;)' > ~/.cache/ags/user/
 
 # Prevent hyprland from not fully loaded
 sleep 2&&hyprctl reload
+
+# Load Tilix config
+v $HOME/.local/bin/tilix-dconf load
 #####################################################################################
 printf "\e[36m[$0]: Finished. See the \"import-manually\" folder and grab anything you need.\e[97m\n"
 printf "\e[36mPress \e[30m\e[46m Super+Shift+/ \e[0m\e[36m for a list of keybinds.\e[97m\n"
