@@ -133,7 +133,7 @@ done
 echo 'Just a file to confirm that you have been greeted ;)' > ~/.cache/ags/user/firstrun.txt
 
 # Prevent hyprland from not fully loaded
-sleep 2&&hyprctl reload
+sleep 2; try hyprctl reload
 
 # Load Tilix config
 v $HOME/.local/bin/tilix-dconf load
