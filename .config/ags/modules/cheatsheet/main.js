@@ -34,6 +34,16 @@ const cheatsheetHeader = () => Widget.CenterBox({
                     Widget.Label({
                         vpack: 'center',
                         className: "cheatsheet-key txt-small",
+                        label: "Shift",
+                    }),
+                    Widget.Label({
+                        vpack: 'center',
+                        className: "cheatsheet-key-notkey txt-small",
+                        label: "+",
+                    }),
+                    Widget.Label({
+                        vpack: 'center',
+                        className: "cheatsheet-key txt-small",
                         label: "/",
                     })
                 ]
@@ -43,7 +53,7 @@ const cheatsheetHeader = () => Widget.CenterBox({
                 selectable: true,
                 justify: Gtk.Justification.CENTER,
                 className: 'txt-small txt',
-                label: 'Sheet data stored in <tt>~/.config/ags/data/keybinds.js</tt>\nChange keybinds in <tt>~/.config/hypr/keybinds.conf</tt>'
+                label: 'Sheet data: <tt>~/.config/ags/data/keybinds.js</tt>        Keybinds config: <tt>~/.config/hypr/keybinds.conf</tt>\n<tt>s-</tt> for super, <tt>A-</tt> for Alt, <tt>S-</tt> for Shift, <tt>C-</tt> for Control        <tt>hjkl</tt> representing ←↓↑→ directions like vim'
             }),
         ]
     }),
