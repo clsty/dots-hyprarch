@@ -16,10 +16,15 @@ import {
 } from "./quicktoggles.js";
 import ModuleNotificationList from "./notificationlist.js";
 import { ModuleCalendar } from "./calendar.js";
+import { getDistroIcon } from '../.miscutils/system.js';
 
 const timeRow = Box({
-    className: 'spacing-h-5 sidebar-group-invisible-morehorizpad',
+    className: 'spacing-h-10 sidebar-group-invisible-morehorizpad',
     children: [
+        Widget.Icon({
+            icon: getDistroIcon(),
+            className: 'txt txt-larger',
+        }),
         Widget.Label({
             hpack: 'center',
             className: 'txt-small txt',
@@ -27,7 +32,7 @@ const timeRow = Box({
                 .poll(5000, label => {
                     execAsync(['bash', '-c', `w | sed -n '1p' | cut -d, -f1 | cut -d' ' -f4-`])
                         .then(upTimeString => {
-                            label.label = `Uptime: ${upTimeString}`;
+                            label.label = `Uptime ${upTimeString}`;
                         }).catch(print);
                 })
             ,

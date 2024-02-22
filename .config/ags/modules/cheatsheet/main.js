@@ -53,7 +53,7 @@ const cheatsheetHeader = () => Widget.CenterBox({
                 selectable: true,
                 justify: Gtk.Justification.CENTER,
                 className: 'txt-small txt',
-                label: 'Sheet data: <tt>~/.config/ags/data/keybinds.js</tt>        Keybinds config: <tt>~/.config/hypr/keybinds.conf</tt>\n<tt>s-</tt> for super, <tt>A-</tt> for Alt, <tt>S-</tt> for Shift, <tt>C-</tt> for Control        <tt>hjkl</tt> representing ←↓↑→ directions like vim'
+                label: 'Sheet data: <tt>~/.config/ags/modules/cheatsheet/data_keybinds.js</tt>        Keybinds config: <tt>~/.config/hypr/hyprland/keybinds.conf</tt>\n<tt>s-</tt> for super, <tt>A-</tt> for Alt, <tt>S-</tt> for Shift, <tt>C-</tt> for Control        <tt>hjkl</tt> representing ←↓↑→ directions like vim'
             }),
         ]
     }),

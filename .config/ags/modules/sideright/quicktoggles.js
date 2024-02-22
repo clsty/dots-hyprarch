@@ -89,15 +89,13 @@ export const HyprToggleIcon = async (icon, name, hyprlandConfigValue, props = {}
 export const ModuleNightLight = (props = {}) => Widget.Button({ // TODO: Make this work
     attribute: {
         enabled: false,
-        yellowlight: undefined,
     },
     className: 'txt-small sidebar-iconbutton',
     tooltipText: 'Night Light',
     onClicked: (self) => {
         self.attribute.enabled = !self.attribute.enabled;
         self.toggleClassName('sidebar-button-active', self.attribute.enabled);
-        // if (self.attribute.enabled) Utils.execAsync(['bash', '-c', 'wlsunset & disown'])
-        if (self.attribute.enabled) Utils.execAsync('wlsunset').catch(print)
+        if (self.attribute.enabled) Utils.execAsync(['wlsunset', '-t', '4500']).catch(print)
         else Utils.execAsync('pkill wlsunset').catch(print);
     },
     child: MaterialIcon('nightlight', 'norm'),
@@ -143,27 +141,21 @@ export const ModuleInvertColors = async (props = {}) => {
 export const ModuleIdleInhibitor = (props = {}) => Widget.Button({ // TODO: Make this work
     attribute: {
         enabled: false,
-        inhibitor: undefined,
     },
     className: 'txt-small sidebar-iconbutton',
     tooltipText: 'Keep system awake',
     onClicked: (self) => {
         self.attribute.enabled = !self.attribute.enabled;
         self.toggleClassName('sidebar-button-active', self.attribute.enabled);
-        if (self.attribute.enabled) {
-            self.attribute.inhibitor = Utils.subprocess(
-                [`${App.configDir}/scripts/wayland-idle-inhibitor.py`],
-                (output) => print(output),
-                (err) => logError(err),
-                self,
-            );
-        }
-        else {
-            self.attribute.inhibitor.force_exit();
-        }
+        if (self.attribute.enabled) Utils.execAsync(['bash', '-c', `pidof wayland-idle-inhibitor.py || ${App.configDir}/scripts/wayland-idle-inhibitor.py`]).catch(print)
+        else Utils.execAsync('pkill -f wayland-idle-inhibitor.py').catch(print);
     },
     child: MaterialIcon('coffee', 'norm'),
-    setup: setupCursorHover,
+    setup: (self) => {
+        setupCursorHover(self);
+        self.attribute.enabled = !!exec('pidof wayland-idle-inhibitor.py');
+        self.toggleClassName('sidebar-button-active', self.attribute.enabled);
+    },
     ...props,
 });
 

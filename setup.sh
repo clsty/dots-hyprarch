@@ -4,6 +4,7 @@ export base="$(pwd)"
 echo $base
 source ./scriptdata/functions
 source ./scriptdata/installers
+source ./scriptdata/options
 
 #####################################################################################
 if ! command -v pacman >/dev/null 2>&1;then printf "\e[31m[$0]: pacman not found, it seems that the system is not ArchLinux or Arch-based distros. Aborting...\e[0m\n";exit 1;fi
@@ -31,8 +32,8 @@ case $p in
 esac
 }
 
-case $1 in
-  "-f")ask=false;;
+case $ask in
+  false)sleep 0;;
   *)startask ;;
 esac
 
@@ -138,10 +139,10 @@ do
   fi
 done
 
-target="$HOME/.config/hypr/colors.conf"
-test -f $target || { \
-  echo -e "\e[34m[$0]: File \"$target\" not found.\e[0m" && \
-  v cp "$HOME/.config/hypr/colors_default.conf" $target ; }
+#target="$HOME/.config/hypr/colors.conf"
+#test -f $target || { \
+#  echo -e "\e[34m[$0]: File \"$target\" not found.\e[0m" && \
+#  v cp "$HOME/.config/hypr/colors_default.conf" $target ; }
 
 # some foldes (eg. .local/bin) should be processed seperately to avoid `--delete' for rsync,
 # since the files here come from different places, not only about one program.
@@ -158,7 +159,7 @@ done
 echo 'Just a file to confirm that you have been greeted ;)' > ~/.cache/ags/user/firstrun.txt
 
 # Prevent hyprland from not fully loaded
-sleep 2; try hyprctl reload
+sleep 1; try hyprctl reload
 
 # Load Tilix config
 v $HOME/.local/bin/tilix-dconf load

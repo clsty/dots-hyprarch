@@ -2,6 +2,5 @@
 .config/ags/scss/_musicmaterial.scss
 .config/ags/scss/_musicwal.scss
 .config/ags/scss/_material.scss
-.config/hypr/colors.conf
 /cache
 import-manually/themes/cache

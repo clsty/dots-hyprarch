@@ -113,8 +113,8 @@ export default () => {
                 margin-bottom: -${Math.round((y + h) * OVERVIEW_SCALE)}px;
             `,
             onClicked: (self) => {
-                Hyprland.messageAsync(`dispatch focuswindow address:${address}`);
                 App.closeWindow('overview');
+                Utils.timeout(100, () => Hyprland.messageAsync(`dispatch focuswindow address:${address}`));
             },
             onMiddleClickRelease: () => Hyprland.messageAsync(`dispatch closewindow address:${address}`),
             onSecondaryClick: (button) => {
@@ -159,20 +159,21 @@ export default () => {
                     children: [
                         appIcon,
                         // TODO: Add xwayland tag instead of just having italics
-                        // Widget.Revealer({
-                        //     transition: 'slide_down',
-                        //     revealChild: revealInfoCondition,
-                        //     child: Widget.Label({
-                        //         truncate: 'end',
-                        //         className: `${xwayland ? 'txt txt-italic' : 'txt'}`,
-                        //         css: `
-                        //         font-size: ${Math.min(SCREEN_WIDTH, SCREEN_HEIGHT) * OVERVIEW_SCALE / 14.6}px;
-                        //         margin: 0px ${Math.min(SCREEN_WIDTH, SCREEN_HEIGHT) * OVERVIEW_SCALE / 10}px;
-                        //     `,
-                        //         // If the title is too short, include the class
-                        //         label: (title.length <= 1 ? `${c}: ${title}` : title),
-                        //     })
-                        // })
+                        Widget.Revealer({
+                            transition: 'slide_down',
+                            revealChild: revealInfoCondition,
+                            child: Widget.Label({
+                                maxWidthChars: 10, // Doesn't matter what number
+                                truncate: 'end',
+                                className: `${xwayland ? 'txt txt-italic' : 'txt'}`,
+                                css: `
+                                font-size: ${Math.min(SCREEN_WIDTH, SCREEN_HEIGHT) * OVERVIEW_SCALE / 14.6}px;
+                                margin: 0px ${Math.min(SCREEN_WIDTH, SCREEN_HEIGHT) * OVERVIEW_SCALE / 10}px;
+                            `,
+                                // If the title is too short, include the class
+                                label: (title.length <= 1 ? `${c}: ${title}` : title),
+                            })
+                        })
                     ]
                 })
             }),
@@ -259,7 +260,8 @@ export default () => {
                 setup: (eventbox) => {
                     eventbox.drag_dest_set(Gtk.DestDefaults.ALL, TARGET, Gdk.DragAction.COPY);
                     eventbox.connect('drag-data-received', (_w, _c, _x, _y, data) => {
-                        Hyprland.messageAsync(`dispatch movetoworkspacesilent ${index},address:${data.get_text()}`)
+                        const offset = Math.floor((Hyprland.active.workspace.id - 1) / NUM_OF_WORKSPACES_SHOWN) * NUM_OF_WORKSPACES_SHOWN;
+                        Hyprland.messageAsync(`dispatch movetoworkspacesilent ${index + offset},address:${data.get_text()}`)
                         overviewTick.setValue(!overviewTick.value);
                     });
                 },
@@ -271,10 +273,13 @@ export default () => {
         widget.clear = () => {
             const offset = Math.floor((Hyprland.active.workspace.id - 1) / NUM_OF_WORKSPACES_SHOWN) * NUM_OF_WORKSPACES_SHOWN;
             clientMap.forEach((client, address) => {
-                if (!client || client.ws !== offset + index) return;
-                client.destroy();
-                client = null;
-                clientMap.delete(address);
+                if (!client) return;
+                if ((client.attribute.ws <= offset || client.attribute.ws > offset + NUM_OF_WORKSPACES_SHOWN) ||
+                    (client.attribute.ws == offset + index)) {
+                    client.destroy();
+                    client = null;
+                    clientMap.delete(address);
+                }
             });
         }
         widget.set = (clientJson, screenCoords) => {
@@ -346,7 +351,6 @@ export default () => {
                     const allClients = JSON.parse(clients);
                     const kids = box.get_children();
                     kids.forEach(kid => kid.clear());
-                    // console.log('----------------------------');
                     for (let i = 0; i < allClients.length; i++) {
                         const client = allClients[i];
                         const childID = client.workspace.id - (offset + startWorkspace);
@@ -358,18 +362,6 @@ export default () => {
                             }
                             continue;
                         }
-                        // const modID = client.workspace.id % NUM_OF_WORKSPACES_SHOWN;
-                        // console.log(`[${startWorkspace} -> ${startWorkspace + workspaces - 1}] ? (${client.workspace.id} == ${modID})`);
-                        // // console.log(`[${startWorkspace} -> ${startWorkspace + workspaces}] ? (${modID})`);
-                        // if (startWorkspace <= modID && modID < startWorkspace + workspaces) {
-                        //     console.log('i care');
-                        //     const clientWidget = clientMap.get(client.address);
-                        //     console.log(childID, kids[childID], clientWidget);
-                        //     if (kids[childID] && clientWidget) {
-                        //         console.log('hmm remove', clientWidget.attribute)
-                        //         kids[childID].remove(clientWidget);
-                        //     }
-                        // }
                     }
                     kids.forEach(kid => kid.show());
                 }).catch(print);
@@ -414,13 +406,13 @@ export default () => {
                     box.attribute.updateWorkspace(box, client.workspace.id);
                 }, 'client-added')
                 .hook(Hyprland.active.workspace, (box) => {
+                    // Full update when going to new ws group
                     const previousGroup = box.attribute.workspaceGroup;
                     const currentGroup = Math.floor((Hyprland.active.workspace.id - 1) / NUM_OF_WORKSPACES_SHOWN);
                     if (currentGroup !== previousGroup) {
                         box.attribute.update(box);
-                        workspaceGroup = currentGroup;
+                        box.attribute.workspaceGroup = currentGroup;
                     }
-                    // box.attribute.update(box);
                 })
                 .hook(App, (box, name, visible) => { // Update on open
                     if (name == 'overview' && visible) box.attribute.update(box);
