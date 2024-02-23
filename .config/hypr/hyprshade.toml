@@ -11,5 +11,5 @@ default = true
 
 [[shades]]
 name = "mono"
-start_time = 22:50:00
+start_time = 22:30:00
 end_time = 06:30:00
