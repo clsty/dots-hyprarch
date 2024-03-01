@@ -5,9 +5,9 @@ const { Box, Label, Button, Overlay, Revealer, Scrollable, Stack, EventBox } = W
 const { exec, execAsync } = Utils;
 const { GLib } = imports.gi;
 import Battery from 'resource:///com/github/Aylur/ags/service/battery.js';
-import { MaterialIcon } from '../.commonwidgets/materialicon.js';
-import { AnimatedCircProg } from "../.commonwidgets/cairo_circularprogress.js";
-import { WWO_CODE, WEATHER_SYMBOL, NIGHT_WEATHER_SYMBOL } from '../.commondata/weather.js';
+import { MaterialIcon } from '../../.commonwidgets/materialicon.js';
+import { AnimatedCircProg } from "../../.commonwidgets/cairo_circularprogress.js";
+import { WWO_CODE, WEATHER_SYMBOL, NIGHT_WEATHER_SYMBOL } from '../../.commondata/weather.js';
 
 const BATTERY_LOW = 20;
 const WEATHER_CACHE_FOLDER = `${GLib.get_user_cache_dir()}/ags/weather`;
@@ -42,9 +42,9 @@ const BarClock = () => Widget.Box({
     children: [
         Widget.Label({
             className: 'bar-clock',
-            label: GLib.DateTime.new_now_local().format("%H:%M:%S"),
-            setup: (self) => self.poll(1000, label => {
-                label.label = GLib.DateTime.new_now_local().format("%H:%M:%S");
+            label: GLib.DateTime.new_now_local().format("%H:%M"),
+            setup: (self) => self.poll(5000, label => {
+                label.label = GLib.DateTime.new_now_local().format("%H:%M");
             }),
         }),
         Widget.Label({
@@ -53,9 +53,9 @@ const BarClock = () => Widget.Box({
         }),
         Widget.Label({
             className: 'txt-smallie',
-            label: GLib.DateTime.new_now_local().format("%A, %m-%d"),
-            setup: (self) => self.poll(1000, label => {
-                label.label = GLib.DateTime.new_now_local().format("%A, %m-%d");
+            label: GLib.DateTime.new_now_local().format("%A, %d/%m"),
+            setup: (self) => self.poll(5000, label => {
+                label.label = GLib.DateTime.new_now_local().format("%A, %d/%m");
             }),
         }),
     ],
