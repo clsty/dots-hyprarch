@@ -9,18 +9,18 @@ import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 const { Box, DrawingArea, EventBox } = Widget;
 import Hyprland from 'resource:///com/github/Aylur/ags/service/hyprland.js';
 
-const NUM_OF_WORKSPACES_SHOWN = 10; // Limit = 53 I think
 const dummyWs = Box({ className: 'bar-ws-focus' }); // Not shown. Only for getting size props
 const dummyActiveWs = Box({ className: 'bar-ws-focus bar-ws-focus-active' }); // Not shown. Only for getting size props
 const dummyOccupiedWs = Box({ className: 'bar-ws-focus bar-ws-focus-occupied' }); // Not shown. Only for getting size props
 
 const WS_TAKEN_WIDTH_MULTIPLIER = 1.4;
+const floor = Math.floor;
+const ceil = Math.ceil;
 
 // Font size = workspace id
 const WorkspaceContents = (count = 10) => {
     return DrawingArea({
-        className: 'element-decel',
-        // css: `transition: 300ms cubic-bezier(0.1, 1, 0, 1);`,
+        className: 'menu-decel',
         attribute: {
             lastImmediateActiveWs: 0,
             immediateActiveWs: 0,
@@ -28,7 +28,7 @@ const WorkspaceContents = (count = 10) => {
             workspaceMask: 0,
             workspaceGroup: 0,
             updateMask: (self) => {
-                const offset = Math.floor((Hyprland.active.workspace.id - 1) / count) * NUM_OF_WORKSPACES_SHOWN;
+                const offset = Math.floor((Hyprland.active.workspace.id - 1) / count) * userOptions.workspaces.shown;
                 // if (self.attribute.initialized) return; // We only need this to run once
                 const workspaces = Hyprland.workspaces;
                 let workspaceMask = 0;
@@ -64,7 +64,7 @@ const WorkspaceContents = (count = 10) => {
             })
             .hook(Hyprland, (self) => self.attribute.updateMask(self), 'notify::workspaces')
             .on('draw', Lang.bind(area, (area, cr) => {
-                const offset = Math.floor((Hyprland.active.workspace.id - 1) / count) * NUM_OF_WORKSPACES_SHOWN;
+                const offset = Math.floor((Hyprland.active.workspace.id - 1) / count) * userOptions.workspaces.shown;
 
                 const allocation = area.get_allocation();
                 const { width, height } = allocation;
@@ -114,8 +114,8 @@ const WorkspaceContents = (count = 10) => {
                     cr.arc(centerX, height / 2, workspaceRadius, 0, 2 * Math.PI);
                     cr.fill();
                     // What if shrinking
-                    if (i == immediateActiveWs - 1 && immediateActiveWs > activeWs) { // To right
-                        const widthPercentage = 1 - (immediateActiveWs - activeWs);
+                    if (i == floor(activeWs) && immediateActiveWs > activeWs) { // To right
+                        const widthPercentage = 1 - (ceil(activeWs) - activeWs);
                         const leftX = centerX;
                         const wsWidth = (activeWorkspaceWidth - (workspaceDiameter * 1.5)) * (1 - widthPercentage);
                         cr.rectangle(leftX, height / 2 - workspaceRadius, wsWidth, workspaceDiameter);
@@ -123,8 +123,8 @@ const WorkspaceContents = (count = 10) => {
                         cr.arc(leftX + wsWidth, height / 2, workspaceRadius, 0, Math.PI * 2);
                         cr.fill();
                     }
-                    else if (i == immediateActiveWs + 1 && immediateActiveWs < activeWs) { // To left
-                        const widthPercentage = activeWs - immediateActiveWs;
+                    else if (i == ceil(activeWs) && immediateActiveWs < activeWs) { // To left
+                        const widthPercentage = activeWs - floor(activeWs);
                         const rightX = centerX;
                         const wsWidth = (activeWorkspaceWidth - (workspaceDiameter * 1.5)) * widthPercentage;
                         const leftX = rightX - wsWidth;
@@ -138,6 +138,7 @@ const WorkspaceContents = (count = 10) => {
                 let widthPercentage, leftX, rightX, activeWsWidth;
                 cr.setSourceRGBA(activebg.red, activebg.green, activebg.blue, activebg.alpha);
                 if (immediateActiveWs > activeWs) { // To right
+                    const immediateActiveWs = ceil(activeWs);
                     widthPercentage = immediateActiveWs - activeWs;
                     rightX = -workspaceRadius + workspaceDiameter * WS_TAKEN_WIDTH_MULTIPLIER * (count - 1) + activeWorkspaceWidth - ((count - immediateActiveWs) * workspaceDiameter * WS_TAKEN_WIDTH_MULTIPLIER);
                     activeWsWidth = (activeWorkspaceWidth - (workspaceDiameter * 1.5)) * (1 - widthPercentage);
@@ -151,6 +152,7 @@ const WorkspaceContents = (count = 10) => {
                     cr.fill();
                 }
                 else { // To left
+                    const immediateActiveWs = floor(activeWs);
                     widthPercentage = 1 - (activeWs - immediateActiveWs);
                     leftX = -workspaceRadius + (workspaceDiameter * WS_TAKEN_WIDTH_MULTIPLIER * immediateActiveWs);
                     activeWsWidth = (activeWorkspaceWidth - (workspaceDiameter * 1.5)) * widthPercentage
@@ -182,7 +184,7 @@ export default () => EventBox({
         children: [Box({
             // className: 'bar-group bar-group-standalone bar-group-pad',
             css: 'min-width: 2px;',
-            children: [WorkspaceContents(NUM_OF_WORKSPACES_SHOWN)],
+            children: [WorkspaceContents(userOptions.workspaces.shown)],
         })]
     }),
     setup: (self) => {
@@ -191,7 +193,7 @@ export default () => EventBox({
             if (!self.attribute.clicked) return;
             const [_, cursorX, cursorY] = event.get_coords();
             const widgetWidth = self.get_allocation().width;
-            const wsId = Math.ceil(cursorX * NUM_OF_WORKSPACES_SHOWN / widgetWidth);
+            const wsId = Math.ceil(cursorX * userOptions.workspaces.shown / widgetWidth);
             Utils.execAsync([`${App.configDir}/scripts/hyprland/workspace_action.sh`, 'workspace', `${wsId}`])
                 .catch(print);
         })
@@ -202,7 +204,7 @@ export default () => EventBox({
             const widgetWidth = self.get_allocation().width;
             // const wsId = Math.ceil(cursorX * NUM_OF_WORKSPACES_PER_GROUP / widgetWidth) + self.attribute.ws_group * NUM_OF_WORKSPACES_PER_GROUP;
             // Hyprland.messageAsync(`dispatch workspace ${wsId}`).catch(print);
-            const wsId = Math.ceil(cursorX * NUM_OF_WORKSPACES_SHOWN / widgetWidth);
+            const wsId = Math.ceil(cursorX * userOptions.workspaces.shown / widgetWidth);
             Utils.execAsync([`${App.configDir}/scripts/hyprland/workspace_action.sh`, 'workspace', `${wsId}`])
                 .catch(print);
         })
