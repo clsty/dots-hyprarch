@@ -172,14 +172,19 @@ v rsync -av --delete --exclude '/custom' --exclude '/hyprland.conf' .config/hypr
 t="$HOME/.config/hypr/hyprland.conf"
 if [ -f $t ];then
   echo -e "\e[34m[$0]: \"$t\" already exists.\e[0m"
-  if [ ! -d "$HOME"/.config/hypr/custom ];then
-    echo -e "\e[33m[$0]: But it seems that you are not using a \"custom\" folder.\e[0m"
-    v cp .config/hypr/hyprland.conf $t
-  fi
+  v cp -f .config/hypr/hyprland.conf $t.new
 else
   echo -e "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
   v cp .config/hypr/hyprland.conf $t
 fi
+t="$HOME/.config/hypr/custom"
+if [ -d $t ];then
+  echo -e "\e[34m[$0]: \"$t\" already exists, will not do anything.\e[0m"
+else
+  echo -e "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
+  v rsync -av --delete .config/hypr/custom/ $t/
+fi
+
 
 # some foldes (eg. .local/bin) should be processed seperately to avoid `--delete' for rsync,
 # since the files here come from different places, not only about one program.
