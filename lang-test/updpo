@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+project=hyprarch
+
+for i in po/*.po; do
+  msgmerge "$i" "po/$project.pot" -o "$po"
+done

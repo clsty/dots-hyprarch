@@ -1,29 +1,27 @@
 #!/usr/bin/env bash
 cd "$(dirname "$0")"
 export base="$(pwd)"
-echo $base
+
 source ./scriptdata/functions
 source ./scriptdata/installers
-source ./scriptdata/options
 
 #####################################################################################
-if ! command -v pacman >/dev/null 2>&1;then printf "\e[31m[$0]: pacman not found, it seems that the system is not ArchLinux or Arch-based distros. Aborting...\e[0m\n";exit 1;fi
+if ! command -v pacman >/dev/null 2>&1;then
+  C_R;printf "pacman not found, it seems that the system is not ArchLinux or Arch-based distros. Aborting...";C_X;P_EOL;exit 1;fi
 prevent_sudo_or_root
 startask (){
-printf "\e[34m[$0]: Hi there!\n"
-printf 'This script 1. only works for ArchLinux and Arch-based distros.\n'
-printf '            2. has not been fully tested, use at your own risk.\n'
-printf "\e[31m"
-printf "Please CONFIRM that you HAVE ALREADY BACKED UP \"$HOME/.config/\" and \"$HOME/.local/\" folders!\n"
-printf "\e[97m"
+C_B;P_BGN;printf "Hi there!";P_EOL
+printf "This script 1. only works for ArchLinux and Arch-based distros.";P_EOL
+printf "            2. has not been fully tested, use at your own risk.";P_EOL
+C_R;printf "Please CONFIRM that you HAVE ALREADY BACKED UP \"$HOME/.config/\" and \"$HOME/.local/\" folders!";P_EOL;C_X
 printf "Enter capital \"YES\" (without quotes) to continue:"
 read -p " " p
 case $p in "YES")sleep 0;; *)exit;;esac
-printf '\n'
-printf 'Do you want to confirm every time before a command executes?\n'
-printf '  y = Yes, ask me before executing each of them. (RECOMMENDED)\n'
-printf '  n = No, just execute them automatically.\n'
-printf '  a = Abort. (DEFAULT)\n'
+P_EOL
+printf 'Do you want to confirm every time before a command executes?';P_EOL
+printf '  y = Yes, ask me before executing each of them. (RECOMMENDED)';P_EOL
+printf '  n = No, just execute them automatically.';P_EOL
+printf '  a = Abort. (DEFAULT)';P_EOL
 read -p "Enter [y/n/A]: " p
 case $p in
   y)ask=true;;
@@ -39,32 +37,32 @@ esac
 
 set -e
 #####################################################################################
-printf "\e[36m[$0]: 1. Get packages and add user to video/input groups\n\e[97m"
+C_C;P_BGN;printf "1. Get packages and add user to video/input groups.";P_EOL;C_X
 
 remove_bashcomments_emptylines ./scriptdata/dependencies.conf ./cache/dependencies_stripped.conf
 readarray -t pkglist < ./cache/dependencies_stripped.conf
 
 if ! command -v yay >/dev/null 2>&1;then
   if ! command -v paru >/dev/null 2>&1;then
-    echo -e "\e[33m[$0]: \"yay\" not found.\e[0m"
+    printf "\e[33m[$0]: \"yay\" not found.\e[0m"
     showfun install-yay
     v install-yay
     AUR_HELPER=yay
   else
-    echo -e "\e[33m[$0]: \"yay\" not found, but \"paru\" found.\e[0m"
-    echo -e "\e[33mIt is not recommended to use \"paru\" as warned in Hyprland Wiki:\e[0m"
-    echo -e "\e[33m    \"If you are using the AUR (hyprland-git) package, you will need to cleanbuild to update the package. Paru has been problematic with updating before, use Yay.\"\e[0m"
-    echo -e "\e[33mReference: https://wiki.hyprland.org/FAQ/#how-do-i-update\e[0m"
+    printf "\e[33m[$0]: \"yay\" not found, but \"paru\" found.\e[0m"
+    printf "\e[33mIt is not recommended to use \"paru\" as warned in Hyprland Wiki:\e[0m"
+    printf "\e[33m    \"If you are using the AUR (hyprland-git) package, you will need to cleanbuild to update the package. Paru has been problematic with updating before, use Yay.\"\e[0m"
+    printf "\e[33mReference: https://wiki.hyprland.org/FAQ/#how-do-i-update\e[0m"
     if $ask;then
-      printf "Install \"yay\"?\n"
-      printf "  y = Yes, install \"yay\" for me first. (DEFAULT)\n"
-      printf "  n = No, use \"paru\" at my own risk.\n"
-      printf "  a = Abort.\n"
+      printf "Install \"yay\"?";P_EOL
+      printf "  y = Yes, install \"yay\" for me first. (DEFAULT)";P_EOL
+      printf "  n = No, use \"paru\" at my own risk.";P_EOL
+      printf "  a = Abort.";P_EOL
       sleep 2
       read -p "====> " p
       case $p in
         [Nn]) AUR_HELPER=paru;;
-        [Aa]) echo -e "\e[34mAlright, aborting...\e[0m";exit 1;;
+        [Aa]) printf "\e[34mAlright, aborting...\e[0m";exit 1;;
         *) v paru -S --needed --noconfirm yay-bin;
            AUR_HELPER=yay;;
       esac
@@ -87,59 +85,59 @@ v sudo usermod -aG video,input "$(whoami)"
 v hyprshade install && systemctl --user enable --now hyprshade.timer
 
 #####################################################################################
-printf "\e[36m[$0]: 2. Installing parts from source repo\e[97m\n"
+printf "\e[36m[$0]: 2. Installing parts from source repo";P_EOL;C_X
 sleep 1
 
 if command -v ags >/dev/null 2>&1;then
-  echo -e "\e[33m[$0]: Command \"ags\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
+  printf "\e[33m[$0]: Command \"ags\" already exists, no need to install.\e[0m"
+  printf "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
   ask_ags=$ask
 else ask_ags=true
 fi
 if $ask_ags;then showfun install-ags;v install-ags;fi
 
 if $(fc-list|grep -q Rubik); then
-  echo -e "\e[33m[$0]: Font \"Rubik\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
+  printf "\e[33m[$0]: Font \"Rubik\" already exists, no need to install.\e[0m"
+  printf "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
   ask_Rubik=$ask
 else ask_Rubik=true
 fi
 if $ask_Rubik;then showfun install-Rubik;v install-Rubik;fi
 
 if $(fc-list|grep -q Gabarito); then
-  echo -e "\e[33m[$0]: Font \"Gabarito\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
+  printf "\e[33m[$0]: Font \"Gabarito\" already exists, no need to install.\e[0m"
+  printf "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
   ask_Gabarito=$ask
 else ask_Gabarito=true
 fi
 if $ask_Gabarito;then showfun install-Gabarito;v install-Gabarito;fi
 
 if $(test -d /usr/local/share/icons/OneUI); then
-  echo -e "\e[33m[$0]: Icon pack \"OneUI\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
+  printf "\e[33m[$0]: Icon pack \"OneUI\" already exists, no need to install.\e[0m"
+  printf "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
   ask_OneUI=$ask
 else ask_OneUI=true
 fi
 if $ask_OneUI;then showfun install-OneUI;v install-OneUI;fi
 
 if $(test -d /usr/local/share/icons/Bibata-Modern-Classic); then
-  echo -e "\e[33m[$0]: Cursor theme \"Bibata-Modern-Classic\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
+  printf "\e[33m[$0]: Cursor theme \"Bibata-Modern-Classic\" already exists, no need to install.\e[0m"
+  printf "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
   ask_bibata=$ask
 else ask_bibata=true
 fi
 if $ask_bibata;then showfun install-bibata;v install-bibata;fi
 
 if command -v LaTeX >/dev/null 2>&1;then
-  echo -e "\e[33m[$0]: Program \"MicroTeX\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
+  printf "\e[33m[$0]: Program \"MicroTeX\" already exists, no need to install.\e[0m"
+  printf "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
   ask_MicroTeX=$ask
 else ask_MicroTeX=true
 fi
 if $ask_MicroTeX;then showfun install-MicroTeX;v install-MicroTeX;fi
 
 #####################################################################################
-printf "\e[36m[$0]: 3. Copying\e[97m\n"
+printf "\e[36m[$0]: 3. Copying";P_EOL;C_X
 
 # In case some folders does not exists
 v mkdir -p "$HOME"/.{config,cache,local/{bin,share}}
@@ -151,7 +149,7 @@ v mkdir -p "$HOME"/.{config,cache,local/{bin,share}}
 
 # For .config/* but not AGS/Hyprland
 for file in $(find .config/ -mindepth 1 -maxdepth 1 ! -name 'ags' ! -name 'hypr' -exec basename {} \;); do
-  echo "[$0]: Found target: $i"
+  P_BGN;printf "Found target: %s" "$i";P_EOL
   if [ -d "$i" ];then v rsync -av --delete "$i/" "$HOME/$i/"
   elif [ -f "$i" ];then v rsync -av "$i" "$HOME/$i"
   fi
@@ -161,9 +159,9 @@ done
 v rsync -av --delete --exclude '/user_options.js' .config/ags/ "$HOME"/.config/ags/
 t="$HOME/.config/ags/user_options.js"
 if [ -f $t ];then
-  echo -e "\e[34m[$0]: \"$t\" already exists.\e[0m"
+  printf "\e[34m[$0]: \"$t\" already exists.\e[0m"
 else
-  echo -e "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
+  printf "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
   v cp .config/ags/user_options.js $t
 fi
 
@@ -171,17 +169,17 @@ fi
 v rsync -av --delete --exclude '/custom' --exclude '/hyprland.conf' .config/hypr/ "$HOME"/.config/hypr/
 t="$HOME/.config/hypr/hyprland.conf"
 if [ -f $t ];then
-  echo -e "\e[34m[$0]: \"$t\" already exists.\e[0m"
+  printf "\e[34m[$0]: \"$t\" already exists.\e[0m"
   v cp -f .config/hypr/hyprland.conf $t.new
 else
-  echo -e "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
+  printf "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
   v cp .config/hypr/hyprland.conf $t
 fi
 t="$HOME/.config/hypr/custom"
 if [ -d $t ];then
-  echo -e "\e[34m[$0]: \"$t\" already exists, will not do anything.\e[0m"
+  printf "\e[34m[$0]: \"$t\" already exists, will not do anything.\e[0m"
 else
-  echo -e "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
+  printf "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
   v rsync -av --delete .config/hypr/custom/ $t/
 fi
 
@@ -190,7 +188,7 @@ fi
 # since the files here come from different places, not only about one program.
 for i in .local/bin .local/share/*
 do
-  echo "[$0]: Found target: $i"
+  P_BGN;printf "Found target: %s" "$i";P_EOL
   if [ -d "$i" ];then v rsync -av "$i/" "$HOME/$i/"
   elif [ -f "$i" ];then v rsync -av "$i" "$HOME/$i"
   fi
@@ -206,6 +204,8 @@ sleep 1; try hyprctl reload
 # Load Tilix config
 v $HOME/.local/bin/tilix-dconf load
 #####################################################################################
-printf "\e[36m[$0]: Finished. See the \"import-manually\" folder and grab anything you need.\e[97m\n"
-printf "\e[36mPress \e[30m\e[46m Super+Shift+/ \e[0m\e[36m for a list of keybinds.\e[97m\n"
-printf "\e[36mEdit \e[36m\e[40m ~/.config/hypr/hyprshade.toml \e[0m\e[36m for screen shader configuration.\e[97m\n"
+C_C;P_BGN;printf "Finished. See the \"import-manually\" folder and grab anything you need.";P_EOL
+i="\e[30;46m Super+Shift+/ \e[0m"
+printf "Press $i for a list of keybinds."
+i="\e[36;40m ~/.config/hypr/hyprshade.toml \e[0m"
+printf "Edit $i for screen shader configuration.";P_EOL

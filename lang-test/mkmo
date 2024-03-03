@@ -1,0 +1,11 @@
+#!/bin/sh
+project=hyprarch
+
+set -e
+base=$(dirname $(readlink -f "$0"))
+
+for i in $base/po/*.po; do
+	lang=$(basename ${po%.po})
+	install -dm755 "$base/mo/$lang/LC_MESSAGES/"
+	msgfmt "$i" -o "$base/mo/$lang/LC_MESSAGES/$project.mo"
+done
