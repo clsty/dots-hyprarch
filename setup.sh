@@ -4,6 +4,7 @@ export base="$(pwd)"
 
 source ./scriptdata/functions
 source ./scriptdata/installers
+source ./scriptdata/options
 
 #####################################################################################
 if ! command -v pacman >/dev/null 2>&1;then
