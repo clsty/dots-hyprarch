@@ -67,7 +67,7 @@ const Utilities = () => Box({
     children: [
         UtilButton({
             name: 'Screen snip', icon: 'screenshot_region', onClicked: () => {
-                Utils.execAsync(`${App.configDir}/scripts/grimblast.sh`)
+                Utils.execAsync(`${App.configDir}/scripts/grimblast.sh copy area`)
                     .catch(print)
             }
         }),
@@ -88,7 +88,7 @@ const BarBattery = () => Box({
     className: 'spacing-h-4 txt-onSurfaceVariant',
     children: [
         Revealer({
-            transitionDuration: 150,
+            transitionDuration: userOptions.animations.durationSmall,
             revealChild: false,
             transition: 'slide_right',
             child: MaterialIcon('bolt', 'norm', { tooltipText: "Charging" }),
@@ -133,7 +133,7 @@ const BarGroup = ({ child }) => Widget.Box({
 });
 const BatteryModule = () => Stack({
     transition: 'slide_up_down',
-    transitionDuration: 150,
+    transitionDuration: userOptions.animations.durationLarge,
     children: {
         'laptop': Box({
             className: 'spacing-h-4', children: [

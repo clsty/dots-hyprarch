@@ -161,6 +161,7 @@ v rsync -av --delete --exclude '/user_options.js' .config/ags/ "$HOME"/.config/a
 t="$HOME/.config/ags/user_options.js"
 if [ -f $t ];then
   printf "\e[34m[$0]: \"$t\" already exists.\e[0m"
+  v cp .config/ags/user_options.js $t.new
 else
   printf "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
   v cp .config/ags/user_options.js $t
