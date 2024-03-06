@@ -4,7 +4,7 @@ font-size=23
 
 clock
 timestr=%H:%M:%S
-#datestr=%A, %e of %B
+datestr=%A, %e of %B
 
 color=000000dd
 
