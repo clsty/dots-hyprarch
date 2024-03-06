@@ -1,10 +1,10 @@
 ignore-empty-password
-font=Rubik
+font=LXGW WenKai Mono
 font-size=23
 
 clock
-timestr=%R
-#datestr=%a, %e of %B
+timestr=%H:%M:%S
+#datestr=%A, %e of %B
 
 color=000000dd
 

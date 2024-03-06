@@ -10,8 +10,12 @@ import Gemini from '../../services/gemini.js';
 import { geminiView, geminiCommands, sendMessage as geminiSendMessage, geminiTabIcon } from './apis/gemini.js';
 import { chatGPTView, chatGPTCommands, sendMessage as chatGPTSendMessage, chatGPTTabIcon } from './apis/chatgpt.js';
 import { waifuView, waifuCommands, sendMessage as waifuSendMessage, waifuTabIcon } from './apis/waifu.js';
+import { booruView, booruCommands, sendMessage as booruSendMessage, booruTabIcon } from './apis/booru.js';
 import { enableClickthrough } from "../.widgetutils/clickthrough.js";
+import { checkKeybind } from '../.widgetutils/keybind.js';
 const TextView = Widget.subclass(Gtk.TextView, "AgsTextView");
+
+import { widgetContent } from './sideleft.js';
 
 const EXPAND_INPUT_THRESHOLD = 30;
 const APIS = [
@@ -37,6 +41,14 @@ const APIS = [
         contentWidget: waifuView,
         commandBar: waifuCommands,
         tabIcon: waifuTabIcon,
+        placeholderText: 'Enter tags',
+    },
+    {
+        name: 'Booru',
+        sendCommand: booruSendMessage,
+        contentWidget: booruView,
+        commandBar: booruCommands,
+        tabIcon: booruTabIcon,
         placeholderText: 'Enter tags',
     },
 ];
@@ -72,19 +84,23 @@ export const chatEntry = TextView({
             self.placeholderText = (Gemini.key.length > 0 ? 'Message Gemini...' : 'Enter Google AI API Key...');
         }, 'hasKey')
         .on("key-press-event", (widget, event) => {
-            const keyval = event.get_keyval()[1];
+            // Don't send when Shift+Enter
             if (event.get_keyval()[1] === Gdk.KEY_Return && event.get_state()[1] == Gdk.ModifierType.MOD2_MASK) {
                 apiSendMessage(widget);
                 return true;
             }
-            // Global keybinds
-            if (!(event.get_state()[1] & Gdk.ModifierType.CONTROL_MASK) &&
-                event.get_keyval()[1] === Gdk.KEY_Page_Down) {
+            // Keybinds
+            if (checkKeybind(event, userOptions.keybinds.sidebar.cycleTab))
+                widgetContent.cycleTab();
+            else if (checkKeybind(event, userOptions.keybinds.sidebar.nextTab))
+                widgetContent.nextTab();
+            else if (checkKeybind(event, userOptions.keybinds.sidebar.prevTab))
+                widgetContent.prevTab();
+            else if (checkKeybind(event, userOptions.keybinds.sidebar.apis.nextTab)) {
                 apiWidgets.attribute.nextTab();
                 return true;
             }
-            else if (!(event.get_state()[1] & Gdk.ModifierType.CONTROL_MASK) &&
-                event.get_keyval()[1] === Gdk.KEY_Page_Up) {
+            else if (checkKeybind(event, userOptions.keybinds.sidebar.apis.prevTab)) {
                 apiWidgets.attribute.prevTab();
                 return true;
             }

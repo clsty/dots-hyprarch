@@ -10,7 +10,8 @@ import { fileExists } from '../../.miscutils/files.js';
 import { MaterialIcon } from '../../.commonwidgets/materialicon.js';
 import { MarginRevealer } from '../../.widgethacks/advancedrevealers.js';
 import { setupCursorHover, setupCursorHoverInfo } from '../../.widgetutils/cursorhover.js';
-import WaifuService from '../../../services/waifus.js';
+import BooruService from '../../../services/booru.js';
+const Grid = Widget.subclass(Gtk.Grid, "AgsGrid");
 
 async function getImageViewerApp(preferredApp) {
     Utils.execAsync(['bash', '-c', `command -v ${preferredApp}`])
@@ -35,32 +36,32 @@ const CommandButton = (command) => Button({
     label: command,
 });
 
-export const waifuTabIcon = Box({
+export const booruTabIcon = Box({
     hpack: 'center',
     className: 'sidebar-chat-apiswitcher-icon',
     homogeneous: true,
     children: [
-        MaterialIcon('photo', 'norm'),
+        MaterialIcon('gallery_thumbnail', 'norm'),
     ]
 });
 
-const WaifuInfo = () => {
-    const waifuLogo = Label({
+const BooruInfo = () => {
+    const booruLogo = Label({
         hpack: 'center',
         className: 'sidebar-chat-welcome-logo',
-        label: 'photo',
+        label: 'gallery_thumbnail',
     })
     return Box({
         vertical: true,
         vexpand: true,
         className: 'spacing-v-15',
         children: [
-            waifuLogo,
+            booruLogo,
             Label({
                 className: 'txt txt-title-small sidebar-chat-welcome-txt',
                 wrap: true,
                 justify: Gtk.Justification.CENTER,
-                label: 'Waifus',
+                label: 'Anime booru',
             }),
             Box({
                 className: 'spacing-h-5',
@@ -70,12 +71,12 @@ const WaifuInfo = () => {
                         className: 'txt-smallie txt-subtext',
                         wrap: true,
                         justify: Gtk.Justification.CENTER,
-                        label: 'Powered by waifu.im + other APIs',
+                        label: 'Powered by yande.re',
                     }),
                     Button({
                         className: 'txt-subtext txt-norm icon-material',
                         label: 'info',
-                        tooltipText: 'Type tags for a random pic.\nNSFW content will not be returned unless\nyou explicitly request such a tag.\n\nDisclaimer: Not affiliated with the providers\nnor responsible for any of their content.',
+                        tooltipText: 'An image booru. May contain NSFW content.\nWatch your back.\n\nDisclaimer: Not affiliated with the provider\nnor responsible for any of its content.',
                         setup: setupCursorHoverInfo,
                     }),
                 ]
@@ -84,7 +85,7 @@ const WaifuInfo = () => {
     });
 }
 
-const waifuWelcome = Box({
+const booruWelcome = Box({
     vexpand: true,
     homogeneous: true,
     child: Box({
@@ -92,13 +93,13 @@ const waifuWelcome = Box({
         vpack: 'center',
         vertical: true,
         children: [
-            WaifuInfo(),
+            BooruInfo(),
         ]
     })
 });
 
-const WaifuImage = (taglist) => {
-    const ImageState = (icon, name) => Box({
+const BooruPage = (taglist) => {
+    const PageState = (icon, name) => Box({
         className: 'spacing-h-5 txt',
         children: [
             Box({ hexpand: true }),
@@ -117,6 +118,18 @@ const WaifuImage = (taglist) => {
         onClicked: action,
         setup: setupCursorHover,
     })
+    const PreviewImage = (data) => {
+        return Box({
+            className: 'sidebar-booru-image',
+            // css: 'border: 2px solid white;',
+            css: `background-image: url('${data.preview_url}');`,
+            // setup: (self) => {
+                // Utils.timeout(1000, () => {
+                //     self.css = `background-image: url('${data.preview_url}');`;
+                // })
+            // }
+        })
+    }
     const colorIndicator = Box({
         className: `sidebar-chat-indicator`,
     });
@@ -125,10 +138,10 @@ const WaifuImage = (taglist) => {
         transition: 'slide_up_down',
         transitionDuration: userOptions.animations.durationSmall,
         children: {
-            'api': ImageState('api', 'Calling API'),
-            'download': ImageState('downloading', 'Downloading image'),
-            'done': ImageState('done', 'Finished!'),
-            'error': ImageState('error', 'Error'),
+            'api': PageState('api', 'Calling API'),
+            'download': PageState('downloading', 'Downloading image'),
+            'done': PageState('done', 'Finished!'),
+            'error': PageState('error', 'Error'),
         },
     });
     const downloadIndicator = MarginRevealer({
@@ -137,7 +150,7 @@ const WaifuImage = (taglist) => {
         revealChild: true,
         child: downloadState,
     });
-    const blockHeading = Box({
+    const pageHeading = Box({
         hpack: 'fill',
         className: 'sidebar-waifu-content spacing-h-5',
         children: [
@@ -146,7 +159,7 @@ const WaifuImage = (taglist) => {
             downloadIndicator,
         ]
     });
-    const blockImageActions = Revealer({
+    const pageActions = Revealer({
         transition: 'crossfade',
         revealChild: false,
         child: Box({
@@ -159,99 +172,68 @@ const WaifuImage = (taglist) => {
                         ImageAction({
                             name: 'Go to source',
                             icon: 'link',
-                            action: () => execAsync(['xdg-open', `${thisBlock.attribute.imageData.source}`]).catch(print),
+                            action: () => execAsync(['xdg-open', `${thisPage.attribute.imageData.source}`]).catch(print),
                         }),
                         ImageAction({
                             name: 'Hoard',
                             icon: 'save',
-                            action: () => execAsync(['bash', '-c', `mkdir -p ~/Pictures/homework${thisBlock.attribute.isNsfw ? '/🌶️' : ''} && cp ${thisBlock.attribute.imagePath} ~/Pictures/homework${thisBlock.attribute.isNsfw ? '/🌶️/' : ''}`]).catch(print),
+                            action: () => execAsync(['bash', '-c', `mkdir -p ~/Pictures/homework${thisPage.attribute.isNsfw ? '/🌶️' : ''} && cp ${thisPage.attribute.imagePath} ~/Pictures/homework${thisPage.attribute.isNsfw ? '/🌶️/' : ''}`]).catch(print),
                         }),
                         ImageAction({
                             name: 'Open externally',
                             icon: 'open_in_new',
-                            action: () => execAsync([IMAGE_VIEWER_APP, `${thisBlock.attribute.imagePath}`]).catch(print),
+                            action: () => execAsync([IMAGE_VIEWER_APP, `${thisPage.attribute.imagePath}`]).catch(print),
                         }),
                     ]
                 })
             ],
         })
     })
-    const blockImage = Widget.DrawingArea({
+    const pageImageGrid = Grid({
+        columnHomogeneous: true,
+        rowHomogeneous: true,
         className: 'sidebar-waifu-image',
+        // css: 'min-height: 90px;'
     });
-    const blockImageRevealer = Revealer({
+    const pageImageRevealer = Revealer({
         transition: 'slide_down',
         transitionDuration: userOptions.animations.durationLarge,
         revealChild: false,
-        child: Overlay({
-            child: Box({
-                homogeneous: true,
-                className: 'sidebar-waifu-image',
-                children: [blockImage],
-            }),
-            overlays: [blockImageActions],
-        }),
+        child: pageImageGrid,
     });
-    const thisBlock = Box({
+    const thisPage = Box({
         className: 'sidebar-chat-message',
         attribute: {
             'imagePath': '',
             'isNsfw': false,
             'imageData': '',
-            'update': (imageData, force = false) => {
-                thisBlock.attribute.imageData = imageData;
-                const { status, signature, url, extension, source, dominant_color, is_nsfw, width, height, tags } = thisBlock.attribute.imageData;
-                thisBlock.attribute.isNsfw = is_nsfw;
-                if (status != 200) {
+            'update': (data, force = false) => {
+                const imageData = data;
+                thisPage.attribute.imageData = imageData;
+                if (data.length == 0) {
                     downloadState.shown = 'error';
                     return;
                 }
-                thisBlock.attribute.imagePath = `${USER_CACHE_DIR}/ags/media/waifus/${signature}${extension}`;
-                downloadState.shown = 'download';
-                // Width/height
-                const widgetWidth = Math.min(Math.floor(waifuContent.get_allocated_width() * 0.85), width);
-                const widgetHeight = Math.ceil(widgetWidth * height / width);
-                blockImage.set_size_request(widgetWidth, widgetHeight);
-                const showImage = () => {
-                    downloadState.shown = 'done';
-                    const pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thisBlock.attribute.imagePath, widgetWidth, widgetHeight);
-                    // const pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(thisBlock.attribute.imagePath, widgetWidth, widgetHeight, false);
-
-                    blockImage.set_size_request(widgetWidth, widgetHeight);
-                    blockImage.connect("draw", (widget, cr) => {
-                        const borderRadius = widget.get_style_context().get_property('border-radius', Gtk.StateFlags.NORMAL);
-
-                        // Draw a rounded rectangle
-                        cr.arc(borderRadius, borderRadius, borderRadius, Math.PI, 1.5 * Math.PI);
-                        cr.arc(widgetWidth - borderRadius, borderRadius, borderRadius, 1.5 * Math.PI, 2 * Math.PI);
-                        cr.arc(widgetWidth - borderRadius, widgetHeight - borderRadius, borderRadius, 0, 0.5 * Math.PI);
-                        cr.arc(borderRadius, widgetHeight - borderRadius, borderRadius, 0.5 * Math.PI, Math.PI);
-                        cr.closePath();
-                        cr.clip();
-
-                        // Paint image as bg
-                        Gdk.cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
-                        cr.paint();
-                    });
-
-                    // Reveal stuff
-                    Utils.timeout(IMAGE_REVEAL_DELAY, () => {
-                        blockImageRevealer.revealChild = true;
-                    })
-                    Utils.timeout(IMAGE_REVEAL_DELAY + blockImageRevealer.transitionDuration,
-                        () => blockImageActions.revealChild = true
-                    );
-                    downloadIndicator.attribute.hide();
+                const imageColumns = userOptions.sidebar.imageColumns;
+                const imageRows = data.length / imageColumns;
+                // Add stuff
+                for (let i = 0; i < imageRows; i++) {
+                    for (let j = 0; j < imageColumns; j++) {
+                        if (i * imageColumns + j >= 8) break;
+                        // if (i * imageColumns + j >= data.length) break;
+                        pageImageGrid.attach(PreviewImage(data[i * imageColumns + j]), j, i, 1, 1);
+                    }
                 }
-                // Show
-                if (!force && fileExists(thisBlock.attribute.imagePath)) showImage();
-                else Utils.execAsync(['bash', '-c', `wget -O '${thisBlock.attribute.imagePath}' '${url}'`])
-                    .then(showImage)
-                    .catch(print);
-                blockHeading.get_children().forEach((child) => {
-                    child.setCss(`border-color: ${dominant_color};`);
-                })
-                colorIndicator.css = `background-color: ${dominant_color};`;
+                pageImageGrid.show_all();
+
+                // Reveal stuff
+                Utils.timeout(IMAGE_REVEAL_DELAY,
+                    () => pageImageRevealer.revealChild = true
+                );
+                Utils.timeout(IMAGE_REVEAL_DELAY + pageImageRevealer.transitionDuration,
+                    () => pageActions.revealChild = true
+                );
+                downloadIndicator.attribute.hide();
             },
         },
         children: [
@@ -260,51 +242,50 @@ const WaifuImage = (taglist) => {
                 vertical: true,
                 className: 'spacing-v-5',
                 children: [
-                    blockHeading,
+                    pageHeading,
                     Box({
                         vertical: true,
-                        hpack: 'start',
-                        children: [blockImageRevealer],
+                        children: [pageImageRevealer],
                     })
                 ]
             })
         ],
     });
-    return thisBlock;
+    return thisPage;
 }
 
-const waifuContent = Box({
+const booruContent = Box({
     className: 'spacing-v-15',
     vertical: true,
     attribute: {
         'map': new Map(),
     },
     setup: (self) => self
-        .hook(WaifuService, (box, id) => {
+        .hook(BooruService, (box, id) => {
             if (id === undefined) return;
-            const newImageBlock = WaifuImage(WaifuService.queries[id]);
-            box.add(newImageBlock);
+            const newPage = BooruPage(BooruService.queries[id]);
+            box.add(newPage);
             box.show_all();
-            box.attribute.map.set(id, newImageBlock);
+            box.attribute.map.set(id, newPage);
         }, 'newResponse')
-        .hook(WaifuService, (box, id) => {
+        .hook(BooruService, (box, id) => {
             if (id === undefined) return;
-            const data = WaifuService.responses[id];
+            const data = BooruService.responses[id];
             if (!data) return;
-            const imageBlock = box.attribute.map.get(id);
-            imageBlock?.attribute.update(data);
+            const page = box.attribute.map.get(id);
+            page?.attribute.update(data);
         }, 'updateResponse')
     ,
 });
 
-export const waifuView = Scrollable({
+export const booruView = Scrollable({
     className: 'sidebar-chat-viewport',
     vexpand: true,
     child: Box({
         vertical: true,
         children: [
-            waifuWelcome,
-            waifuContent,
+            booruWelcome,
+            booruContent,
         ]
     }),
     setup: (scrolledWindow) => {
@@ -325,7 +306,7 @@ export const waifuView = Scrollable({
     }
 });
 
-const waifuTags = Revealer({
+const booruTags = Revealer({
     revealChild: false,
     transition: 'crossfade',
     transitionDuration: userOptions.animations.durationLarge,
@@ -339,14 +320,7 @@ const waifuTags = Revealer({
                 child: Box({
                     className: 'spacing-h-5',
                     children: [
-                        CommandButton('waifu'),
-                        CommandButton('maid'),
-                        CommandButton('uniform'),
-                        CommandButton('oppai'),
-                        CommandButton('selfies'),
-                        CommandButton('marin-kitagawa'),
-                        CommandButton('raiden-shogun'),
-                        CommandButton('mori-calliope'),
+                        CommandButton('hololive'),
                     ]
                 })
             }),
@@ -355,7 +329,7 @@ const waifuTags = Revealer({
     })
 });
 
-export const waifuCommands = Box({
+export const booruCommands = Box({
     className: 'spacing-h-5',
     setup: (self) => {
         self.pack_end(CommandButton('/clear'), false, false, 0);
@@ -364,50 +338,24 @@ export const waifuCommands = Box({
             setup: setupCursorHover,
             label: 'Tags →',
             onClicked: () => {
-                waifuTags.revealChild = !waifuTags.revealChild;
+                booruTags.revealChild = !booruTags.revealChild;
             }
         }), false, false, 0);
-        self.pack_start(waifuTags, true, true, 0);
+        self.pack_start(booruTags, true, true, 0);
     }
 });
 
 const clearChat = () => { // destroy!!
-    waifuContent.attribute.map.forEach((value, key, map) => {
+    booruContent.attribute.map.forEach((value, key, map) => {
         value.destroy();
         value = null;
     });
-}
-
-function newSimpleImageCall(name, url, width, height, dominantColor = '#9392A6') {
-    const timeSinceEpoch = Date.now();
-    const newImage = WaifuImage([`/${name}`]);
-    waifuContent.add(newImage);
-    waifuContent.attribute.map.set(timeSinceEpoch, newImage);
-    Utils.timeout(IMAGE_REVEAL_DELAY, () => newImage?.attribute.update({
-        status: 200,
-        url: url,
-        extension: '',
-        signature: timeSinceEpoch,
-        source: url,
-        dominant_color: dominantColor,
-        is_nsfw: false,
-        width: width,
-        height: height,
-        tags: [`/${name}`],
-    }, true));
 }
 
 export const sendMessage = (text) => {
     // Commands
     if (text.startsWith('/')) {
         if (text.startsWith('/clear')) clearChat();
-        else if (text.startsWith('/test'))
-            newSimpleImageCall('test', 'https://picsum.photos/600/400', 300, 200);
-        else if (text.startsWith('/chino'))
-            newSimpleImageCall('chino', 'https://chino.pages.dev/chino', 300, 400, '#B2AEF3');
-        else if (text.startsWith('/place'))
-            newSimpleImageCall('place', 'https://placewaifu.com/image/400/600', 400, 600, '#F0A235');
-
     }
-    else WaifuService.fetch(text);
+    else BooruService.fetch(text);
 }
