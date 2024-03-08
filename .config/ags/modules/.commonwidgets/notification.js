@@ -218,11 +218,11 @@ export default ({
     let notifTime = '';
     const messageTime = GLib.DateTime.new_from_unix_local(notifObject.time);
     if (messageTime.get_day_of_year() == GLib.DateTime.new_now_local().get_day_of_year())
-        notifTime = messageTime.format('%H:%M');
+        notifTime = messageTime.format(userOptions.time.format);
     else if (messageTime.get_day_of_year() == GLib.DateTime.new_now_local().get_day_of_year() - 1)
         notifTime = 'Yesterday';
     else
-        notifTime = messageTime.format('%d/%m');
+        notifTime = messageTime.format(userOptions.time.dateFormat);
     const notifTextSummary = Label({
         xalign: 0,
         className: 'txt-small txt-semibold titlefont',

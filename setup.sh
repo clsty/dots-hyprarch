@@ -84,6 +84,7 @@ fi
 
 v sudo usermod -aG video,input "$(whoami)"
 v hyprshade install && systemctl --user enable --now hyprshade.timer
+sudo systemctl enable --now clightd
 
 #####################################################################################
 printf "\e[36m[$0]: 2. Installing parts from source repo";P_EOL;C_X
