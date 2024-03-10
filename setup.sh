@@ -163,9 +163,11 @@ t="$HOME/.config/ags/user_options.js"
 if [ -f $t ];then
   printf "\e[34m[$0]: \"$t\" already exists.\e[0m"
   v cp .config/ags/user_options.js $t.new
+  existed_ags_opt=y
 else
   printf "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
   v cp .config/ags/user_options.js $t
+  existed_ags_opt=n
 fi
 
 # For Hyprland
@@ -174,9 +176,11 @@ t="$HOME/.config/hypr/hyprland.conf"
 if [ -f $t ];then
   printf "\e[34m[$0]: \"$t\" already exists.\e[0m"
   v cp -f .config/hypr/hyprland.conf $t.new
+  existed_hypr_conf=y
 else
   printf "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
   v cp .config/hypr/hyprland.conf $t
+  existed_hypr_conf=n
 fi
 t="$HOME/.config/hypr/custom"
 if [ -d $t ];then
@@ -212,3 +216,12 @@ i="\e[30;46m Super+Shift+/ \e[0m"
 printf "Press $i for a list of keybinds."
 i="\e[36;40m ~/.config/hypr/hyprshade.toml \e[0m"
 printf "Edit $i for screen shader configuration.";P_EOL
+case $existed_ags_opt in
+  y) printf "\e[33m[$0]: Warning: \"~/.config/ags/user_options.js\" already existed before and we didn't overwrite it. \e[97m\n"
+     printf "Please use \"~/.config/ags/user_options.js.new\" as a reference for a proper format.\e[97m\n"
+;;esac
+case $existed_hypr_conf in
+  y) printf "\e[33m[$0]: Warning: \"~/.config/hypr/hyprland.conf\" already existed before and we didn't overwrite it. \e[97m\n"
+     printf "Please use \"~/.config/hypr/hyprland.conf.new\" as a reference for a proper format.\e[97m\n"
+     printf "If this is your first time installation, you must overwrite \"~/.config/hypr/hyprland.conf\" with \"~/.config/hypr/hyprland.conf.new\".\e[97m\n"
+;;esac
