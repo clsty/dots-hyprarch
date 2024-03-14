@@ -151,6 +151,7 @@ v mkdir -p "$HOME"/.{config,cache,local/{bin,share}}
 
 # For .config/* but not AGS/Hyprland
 for i in $(find .config/ -mindepth 1 -maxdepth 1 ! -name 'ags' ! -name 'hypr' -exec basename {} \;); do
+  i=".config/$i"
   P_BGN;printf "Found target: %s" "$i";P_EOL
   if [ -d "$i" ];then v rsync -av --delete "$i/" "$HOME/$i/"
   elif [ -f "$i" ];then v rsync -av "$i" "$HOME/$i"
