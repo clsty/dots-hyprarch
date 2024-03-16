@@ -211,6 +211,10 @@ sleep 1; try hyprctl reload
 
 # Load Tilix config
 v $HOME/.local/bin/tilix-dconf load
+
+existed_zsh_conf=n
+grep -q 'source ~/.config/zshrc.d/dots-hyprland.zsh' ~/.zshrc && existed_zsh_conf=y
+
 #####################################################################################
 C_C;P_BGN;printf "Finished. See the \"import-manually\" folder and grab anything you need.";P_EOL
 i="\e[30;46m Super+Shift+/ \e[0m"
@@ -225,4 +229,10 @@ case $existed_hypr_conf in
   y) printf "\e[33m[$0]: Warning: \"~/.config/hypr/hyprland.conf\" already existed before and we didn't overwrite it. \e[97m\n"
      printf "Please use \"~/.config/hypr/hyprland.conf.new\" as a reference for a proper format.\e[97m\n"
      printf "If this is your first time installation, you must overwrite \"~/.config/hypr/hyprland.conf\" with \"~/.config/hypr/hyprland.conf.new\".\e[97m\n"
+;;esac
+
+case $existed_zsh_conf in
+  n) printf "\n\e[36m[$0]: \"~/.zshrc\" seems not sourcing \"~/.config/zshrc.d/dots-hyprland.zsh\".\e[97m\n"
+     printf "\e[36mIt is optional, but you may put this line into your \"~/.zshrc\" to support colorscheme for ZSH:\e[97m\n"
+     printf "\e[36m    source ~/.config/zshrc.d/dots-hyprland.zsh\e[97m\n"
 ;;esac
