@@ -27,7 +27,7 @@ export const keybindList = [[
             { "keys": ["s-", "Mmb(Drag)"], "action": "Move" },
             { "keys": ["s-", "Rmb(Drag)"], "action": "Resize" },
         ],
-        "appeartick": 1
+        "id": 1
     },
 //}}}EndOf ===== Windows
 //{{{ ========== Workspaces ==========
@@ -41,7 +41,7 @@ export const keybindList = [[
             { "keys": ["s-", "Scroll"], "action": "WS -1/+1" },
             { "keys": ["s-", "[ ]"], "action": "WS -1/+1" },
         ],
-        "appeartick": 1
+        "id": 2
     },
     {
         "icon": "overview_key",
@@ -53,7 +53,7 @@ export const keybindList = [[
             { "keys": ["s-S-", "Scroll"], "action": "WS -1/+1" },
             { "keys": ["s-S-", "[ ]"], "action": "WS -1/+1" },
         ],
-        "appeartick": 1
+        "id": 3
     },
 //}}}EndOf ===== Workspaces
 ],
@@ -69,7 +69,7 @@ export const keybindList = [[
             { "keys": ["A-S-C-", "ESC"], "action": "btop" },
             { "keys": ["A-S-C-", "ESC"], "action": "btop" },
         ],
-        "appeartick": 2
+        "id": 4
     },
 //}}}EndOf ===== Settings & Configs
 //{{{ ========== Applications ==========
@@ -83,7 +83,7 @@ export const keybindList = [[
             { "keys": ["s-", "Return"], "action": "Tilix" },
             { "keys": ["s-S-", "Return"], "action": "Foot" },
         ],
-        "appeartick": 2
+        "id": 5
     },
 //}}}EndOf ===== Applications
 //{{{ ========== Widgets ==========
@@ -105,7 +105,7 @@ export const keybindList = [[
             { "keys": ["s-", ","], "action": "Color Scheme" },
             // { "keys": ["(right)Ctrl"], "action": "Dismiss notification & close menus" }
         ],
-        "appeartick": 2
+        "id": 6
     },
 //}}}EndOf ===== Widgets
 ],
@@ -128,7 +128,7 @@ export const keybindList = [[
             { "keys": ["s-", "G"], "action": "record selected" },
             { "keys": ["s-S-", "G"], "action": "record fullscreen" },
         ],
-        "appeartick": 3
+        "id": 7
     },
 //}}}EndOf ===== Capture
 //{{{ ========== Media related ==========
@@ -146,7 +146,7 @@ export const keybindList = [[
             { "keys": ["s-S-", "B"], "action": "previous" },
             { "keys": ["s-", "M"], "action": "Music panel" },
         ],
-        "appeartick": 3
+        "id": 8
     }
 //}}}EndOf ===== Media related
 ]];
