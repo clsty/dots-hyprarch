@@ -9,7 +9,7 @@ const { Box, EventBox, Icon, Scrollable, Label, Button, Revealer } = Widget;
 import { fileExists } from '../.miscutils/files.js';
 import { AnimatedCircProg } from "../.commonwidgets/cairo_circularprogress.js";
 import { showMusicControls } from '../../variables.js';
-import { darkMode } from '../.miscutils/system.js';
+import { darkMode, hasPlasmaIntegration } from '../.miscutils/system.js';
 
 const COMPILED_STYLE_DIR = `${GLib.get_user_cache_dir()}/ags/user/generated`
 const LIGHTDARK_FILE_LOCATION = `${GLib.get_user_cache_dir()}/ags/user/colormode.txt`;
@@ -20,9 +20,13 @@ var lastCoverPath = '';
 
 function isRealPlayer(player) {
     return (
-        !player.busName.startsWith('org.mpris.MediaPlayer2.firefox') && // Firefox mpris dbus is useless
-        !player.busName.startsWith('org.mpris.MediaPlayer2.playerctld') && // Doesn't have cover art
-        !player.busName.endsWith('.mpd') // Non-instance mpd bus
+        // Remove unecessary native buses from browsers if there's plasma integration
+        !(hasPlasmaIntegration && player.busName.startsWith('org.mpris.MediaPlayer2.firefox')) &&
+        !(hasPlasmaIntegration && player.busName.startsWith('org.mpris.MediaPlayer2.chromium')) &&
+        // playerctld just copies other buses and we don't need duplicates
+        !player.busName.startsWith('org.mpris.MediaPlayer2.playerctld') &&
+        // Non-instance mpd bus
+        !player.busName.endsWith('.mpd')
     );
 }
 
@@ -381,7 +385,7 @@ const MusicControlsWidget = (player) => Box({
                     setup: (box) => {
                         box.pack_start(TrackControls({ player: player }), false, false, 0);
                         box.pack_end(PlayState({ player: player }), false, false, 0);
-                        box.pack_end(TrackTime({ player: player }), false, false, 0)
+                        if(hasPlasmaIntegration || player.busName.startsWith('org.mpris.MediaPlayer2.chromium')) box.pack_end(TrackTime({ player: player }), false, false, 0)
                         // box.pack_end(TrackSource({ vpack: 'center', player: player }), false, false, 0);
                     }
                 })
@@ -395,57 +399,10 @@ export default () => Revealer({
     transitionDuration: userOptions.animations.durationLarge,
     revealChild: false,
     child: Box({
-        setup: (self) => self.hook(Mpris, box => {
-            box.children.forEach(child => {
-                child.destroy();
-                child = null;
-            });
-            Mpris.players.forEach((player, i) => {
-                if (isRealPlayer(player)) {
-                    const newInstance = MusicControlsWidget(player);
-                    box.add(newInstance);
-                }
-            });
-        }, 'notify::players'),
+        children: Mpris.bind("players")
+            .as(players => players.map((player) => (isRealPlayer(player) ? MusicControlsWidget(player) : null)))
     }),
     setup: (self) => self.hook(showMusicControls, (revealer) => {
         revealer.revealChild = showMusicControls.value;
     }),
 })
-
-// export default () => MarginRevealer({
-//     transition: 'slide_down',
-//     revealChild: false,
-//     showClass: 'osd-show',
-//     hideClass: 'osd-hide',
-//     child: Box({
-//         setup: (self) => self.hook(Mpris, box => {
-//             let foundPlayer = false;
-//             Mpris.players.forEach((player, i) => {
-//                 if (isRealPlayer(player)) {
-//                     foundPlayer = true;
-//                     box.children.forEach(child => {
-//                         child.destroy();
-//                         child = null;
-//                     });
-//                     const newInstance = MusicControlsWidget(player);
-//                     box.children = [newInstance];
-//                 }
-//             });
-
-//             if (!foundPlayer) {
-//                 const children = box.get_children();
-//                 for (let i = 0; i < children.length; i++) {
-//                     const child = children[i];
-//                     child.destroy();
-//                     child = null;
-//                 }
-//                 return;
-//             }
-//         }, 'notify::players'),
-//     }),
-//     setup: (self) => self.hook(showMusicControls, (revealer) => {
-//         if (showMusicControls.value) revealer.attribute.show();
-//         else revealer.attribute.hide();
-//     }),
-// })
