@@ -106,13 +106,17 @@ class GeminiMessage extends Service {
     }
 
     parseSection() {
-        if(this._thinking) {
+        if (this._thinking) {
             this._thinking = false;
-            this._parts[0].text= '';
+            this._parts[0].text = '';
         }
         const parsedData = JSON.parse(this._rawData);
-        const delta = parsedData.candidates[0].content.parts[0].text;
-        this._parts[0].text += delta;
+        if (!parsedData.candidates)
+            this._parts[0].text += `Blocked: ${parsedData.promptFeedback.blockReason}`;
+        else {
+            const delta = parsedData.candidates[0].content.parts[0].text;
+            this._parts[0].text += delta;
+        }
         // this.emit('delta', delta);
         this.notify('content');
         this._rawData = '';
@@ -202,7 +206,7 @@ class GeminiService extends Service {
                 try {
                     const [bytes] = stream.read_line_finish(res);
                     const line = this._decoder.decode(bytes);
-                    console.log(line);
+                    // console.log(line);
                     if (line == '[{') { // beginning of response
                         aiResponse._rawData += '{';
                         this.thinking = false;

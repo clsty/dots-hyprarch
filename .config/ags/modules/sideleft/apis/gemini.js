@@ -16,7 +16,6 @@ const MODEL_NAME = `Gemini`;
 
 export const geminiTabIcon = Icon({
     hpack: 'center',
-    className: 'sidebar-chat-apiswitcher-icon',
     icon: `google-gemini-symbolic`,
 })
 
@@ -89,7 +88,7 @@ export const GeminiSettings = () => MarginRevealer({
                     GeminiService.temperature = value;
                 },
             }),
-            ConfigGap({ vertical: true, size: 10 }), // Note: size can only be 5, 10, or 15 
+            ConfigGap({ vertical: true, size: 10 }), // Note: size can only be 5, 10, or 15
             Box({
                 vertical: true,
                 hpack: 'fill',
@@ -107,7 +106,7 @@ export const GeminiSettings = () => MarginRevealer({
                     ConfigToggle({
                         icon: 'shield',
                         name: 'Safety',
-                        desc: 'When turned off, tells the API not to block harmful/explicit content',
+                        desc: 'When turned off, tells the API (not the model) \nto not block harmful/explicit content',
                         initValue: GeminiService.safe,
                         onChange: (self, newValue) => {
                             GeminiService.safe = newValue;
