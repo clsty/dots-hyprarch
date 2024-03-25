@@ -49,7 +49,7 @@ const GeminiInfo = () => {
                     Button({
                         className: 'txt-subtext txt-norm icon-material',
                         label: 'info',
-                        tooltipText: 'Uses gemini-pro.\nNot affiliated, endorsed, or sponsored by Google.\n\nPrivacy: Google collects data for training by default.\nIf you mind, turn off Gemini Apps Activity in your account.',
+                        tooltipText: 'Uses gemini-pro.\nNot affiliated, endorsed, or sponsored by Google.\n\nPrivacy: Chat messages aren\'t linked to your account,\n    but will be read by human reviewers to improve the model.',
                         setup: setupCursorHoverInfo,
                     }),
                 ]
@@ -112,6 +112,15 @@ export const GeminiSettings = () => MarginRevealer({
                             GeminiService.safe = newValue;
                         },
                     }),
+                    ConfigToggle({
+                        icon: 'history',
+                        name: 'History',
+                        desc: 'Saves chat history\nMessages in previous chats won\'t show automatically, but they are there',
+                        initValue: GeminiService.useHistory,
+                        onChange: (self, newValue) => {
+                            GeminiService.useHistory = newValue;
+                        },
+                    }),
                 ]
             })
         ]
@@ -134,7 +143,8 @@ export const GoogleAiInstructions = () => Box({
                 wrap: true,
                 className: 'txt sidebar-chat-welcome-txt',
                 justify: Gtk.Justification.CENTER,
-                label: 'A Google AI API key is required\nYou can grab one <u>here</u>, then enter it below'
+                label: 'A Google AI API key is required\nYou can grab one <u>here</u>, then enter it below',
+                // setup: self => self.set_markup("This is a <a href=\"https://www.github.com\">test link</a>")
             }),
             setup: setupCursorHover,
             onClicked: () => {
@@ -209,6 +219,10 @@ export const sendMessage = (text) => {
     // Commands
     if (text.startsWith('/')) {
         if (text.startsWith('/clear')) clearChat();
+        else if (text.startsWith('/load')) {
+            clearChat();
+            GeminiService.loadHistory();
+        }
         else if (text.startsWith('/model')) chatContent.add(SystemMessage(`Currently using \`${GeminiService.modelName}\``, '/model', geminiView))
         else if (text.startsWith('/prompt')) {
             const firstSpaceIndex = text.indexOf(' ');
@@ -265,10 +279,10 @@ export const geminiView = Box({
             })
             // Always scroll to bottom with new content
             const adjustment = scrolledWindow.get_vadjustment();
-            adjustment.connect("changed", () => {
+            adjustment.connect("changed", () => Utils.timeout(1, () => {
                 if(!chatEntry.hasFocus) return;
                 adjustment.set_value(adjustment.get_upper() - adjustment.get_page_size());
-            })
+            }))
         }
     })]
 });

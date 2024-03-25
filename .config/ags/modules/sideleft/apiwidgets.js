@@ -75,6 +75,11 @@ export const chatEntry = TextView({
     acceptsTab: false,
     className: 'sidebar-chat-entry txt txt-smallie',
     setup: (self) => self
+        .hook(App, (self, currentName, visible) => {
+            if (visible && currentName === 'sideleft') {
+                self.grab_focus();
+            }
+        })
         .hook(GPTService, (self) => {
             if (APIS[currentApiId].name != 'Assistant (GPTs)') return;
             self.placeholderText = (GPTService.key.length > 0 ? 'Message the model...' : 'Enter API Key...');
@@ -180,7 +185,7 @@ const apiCommandStack = Stack({
 })
 
 export const apiContentStack = IconTabContainer({
-    tabSwitcherClassName: 'sidebar-chat-apiswitcher',
+    tabSwitcherClassName: 'sidebar-icontabswitcher',
     className: 'margin-top-5',
     iconWidgets: APIS.map((api) => api.tabIcon),
     names: APIS.map((api) => api.name),

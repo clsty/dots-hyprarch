@@ -12,6 +12,7 @@ import { MarginRevealer } from '../../.widgethacks/advancedrevealers.js';
 import { setupCursorHover, setupCursorHoverInfo } from '../../.widgetutils/cursorhover.js';
 import BooruService from '../../../services/booru.js';
 import { chatEntry } from '../apiwidgets.js';
+import { ConfigToggle } from '../../.commonwidgets/configwidgets.js';
 const Grid = Widget.subclass(Gtk.Grid, "AgsGrid");
 
 async function getImageViewerApp(preferredApp) {
@@ -85,6 +86,36 @@ const BooruInfo = () => {
     });
 }
 
+export const BooruSettings = () => MarginRevealer({
+    transition: 'slide_down',
+    revealChild: true,
+    child: Box({
+        vertical: true,
+        className: 'sidebar-chat-settings',
+        children: [
+            Box({
+                vertical: true,
+                hpack: 'fill',
+                className: 'sidebar-chat-settings-toggles',
+                children: [
+                    ConfigToggle({
+                        icon: 'menstrual_health',
+                        name: 'Lewds',
+                        desc: `Shows naughty stuff when enabled.\nYa like those? Add this to user_options.js:
+'sidebar': {
+  'imageAllowNsfw': true,
+},`,
+                        initValue: BooruService.nsfw,
+                        onChange: (self, newValue) => {
+                            BooruService.nsfw = newValue;
+                        },
+                    }),
+                ]
+            })
+        ]
+    })
+});
+
 const booruWelcome = Box({
     vexpand: true,
     homogeneous: true,
@@ -94,6 +125,7 @@ const booruWelcome = Box({
         vertical: true,
         children: [
             BooruInfo(),
+            BooruSettings(),
         ]
     })
 });
@@ -348,7 +380,7 @@ export const booruView = Scrollable({
         // Always scroll to bottom with new content
         const adjustment = scrolledWindow.get_vadjustment();
         adjustment.connect("changed", () => {
-            if(!chatEntry.hasFocus) return;
+            if (!chatEntry.hasFocus) return;
             adjustment.set_value(adjustment.get_upper() - adjustment.get_page_size());
         })
     }
