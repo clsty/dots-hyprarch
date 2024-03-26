@@ -222,17 +222,17 @@ printf "Press $i";C_C;printf " for a list of keybinds.";P_EOL
 i="\e[36;40m ~/.config/hypr/hyprshade.toml \e[0m"
 printf "Edit $i";C_C;printf " for screen shader configuration.";P_EOL
 case $existed_ags_opt in
-  y) printf "\e[33m[$0]: Warning: \"~/.config/ags/user_options.js\" already existed before and we didn't overwrite it. \e[97m\n"
-     printf "Please use \"~/.config/ags/user_options.js.new\" as a reference for a proper format.\e[97m\n"
+  y) printf "\e[33m[$0]: Warning: \"~/.config/ags/user_options.js\" already existed before and we didn't overwrite it. \e[0m\n"
+     printf "Please use \"~/.config/ags/user_options.js.new\" as a reference for a proper format.\e[0m\n"
 ;;esac
 case $existed_hypr_conf in
-  y) printf "\e[33m[$0]: Warning: \"~/.config/hypr/hyprland.conf\" already existed before and we didn't overwrite it. \e[97m\n"
-     printf "Please use \"~/.config/hypr/hyprland.conf.new\" as a reference for a proper format.\e[97m\n"
-     printf "If this is your first time installation, you must overwrite \"~/.config/hypr/hyprland.conf\" with \"~/.config/hypr/hyprland.conf.new\".\e[97m\n"
+  y) printf "\e[33m[$0]: Warning: \"~/.config/hypr/hyprland.conf\" already existed before and we didn't overwrite it. \e[0m\n"
+     printf "Please use \"~/.config/hypr/hyprland.conf.new\" as a reference for a proper format.\e[0m\n"
+     printf "If this is your first time installation, you must overwrite \"~/.config/hypr/hyprland.conf\" with \"~/.config/hypr/hyprland.conf.new\".\e[0m\n"
 ;;esac
 
 case $existed_zsh_conf in
-  n) printf "\n\e[36m[$0]: \"~/.zshrc\" seems not sourcing \"~/.config/zshrc.d/dots-hyprland.zsh\".\e[97m\n"
-     printf "\e[36mIt is optional, but you may put this line into your \"~/.zshrc\" to support colorscheme for ZSH:\e[97m\n"
-     printf "\e[36m    source ~/.config/zshrc.d/dots-hyprland.zsh\e[97m\n"
+  n) printf "\n\e[36m[$0]: \"~/.zshrc\" seems not sourcing \"~/.config/zshrc.d/dots-hyprland.zsh\".\e[0m\n"
+     printf "\e[36mIt is optional, but you may put this line into your \"~/.zshrc\" to support colorscheme for ZSH:\e[0m\n"
+     printf "\e[36m    source ~/.config/zshrc.d/dots-hyprland.zsh\e[0m\n"
 ;;esac
