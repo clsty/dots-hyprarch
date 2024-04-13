@@ -1,0 +1,11 @@
+#!/bin/bash
+# Tilix config dumper/loader.
+
+# Note that the user which runs `dconf` matters.
+# Non-root user and root user will get different results by running dconf.
+conf=~/.config/Tilix.dconf
+case $1 in
+	dump)dconf dump '/com/gexperts/Tilix/' > $conf && echo "[$0]: Tilix config has been successfully dumped to \"$conf\"." ;;
+	load)dconf load '/com/gexperts/Tilix/' < $conf && echo "[$0]: Tilix config has been successfully loaded from \"$conf\"." ;;
+	*)echo "[$0]: choose a subcommand: dump, load"; exit 1 ;;
+esac

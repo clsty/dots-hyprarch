@@ -1,0 +1,24 @@
+[/]
+prompt-on-close=true
+prompt-on-new-session=false
+quake-specific-monitor=0
+theme-variant='system'
+use-tabs=true
+
+[keybindings]
+terminal-zoom-in='<Primary>equal'
+
+[profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d]
+background-color='#2E2E34344040'
+background-transparency-percent=48
+badge-color='#AC7EA8'
+badge-color-set=false
+bold-color-set=false
+cursor-colors-set=false
+font='Sarasa Term SC 14'
+foreground-color='#DEDEDDDDDADA'
+highlight-colors-set=false
+palette=['#000000', '#A5A51D1D2D2D', '#2626A2A26969', '#F5F5C2C21111', '#35358484E4E4', '#C0C06161CBCB', '#00AAAA', '#9A9A99999696', '#3D3D38384646', '#FF5454', '#2E2EC2C27E7E', '#F8F8E4E45C5C', '#9999C1C1F1F1', '#DCDC8A8ADDDD', '#5454FFFFFFFF', '#DEDEDDDDDADA']
+use-system-font=false
+use-theme-colors=false
+visible-name='default'

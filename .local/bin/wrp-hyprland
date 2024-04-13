@@ -1,0 +1,39 @@
+#!/bin/sh
+# Some variables here may be occupied after Hyprland launch (eg. MOZ_ENABLE_WAYLAND=1 will be specified),
+# In that case, put env=VAR,VALUE in ~/.config/hypr/execs.conf instead.
+
+cd ~
+
+## IME
+# See https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland
+# export GTK_IM_MODULE=wayland # crashes xWayland electron apps
+# export GTK_IM_MODULE=fcitx # Maybe cause issue like https://github.com/end-4/dots-hyprland/issues/222
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export SDL_IM_MODULE=fcitx
+export GLFW_IM_MODULE=ibus
+export INPUT_METHOD=fcitx
+
+## JAVA
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+## QT
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export QT_QPA_PLATFORM="wayland"
+export QT_QPA_PLATFORMTHEME=qt5ct
+
+## XDG
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_DESKTOP=Hyprland
+export XDG_SESSION_TYPE=wayland
+
+# export WLR_NO_HARDWARE_CURSORS=1 # Uncomment this if your cursor disappears
+# export WLR_DRM_NO_ATOMIC=1
+export LIBSEAT_BACKEND=logind
+export CLUTTER_BACKEND=wayland
+
+if [ -f /usr/local/bin/Hyprland ]; then
+   exec /usr/local/bin/Hyprland >/dev/null 2>&1 
+elif [ -f /usr/bin/Hyprland ]; then
+   exec /usr/bin/Hyprland >/dev/null 2>&1 
+fi

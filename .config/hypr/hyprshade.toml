@@ -1,0 +1,15 @@
+# Run `hyprshade install' after EVERY modification on this file to apply it.
+# Also, you'll need `systemctl --user enable --now hyprshade.timer' but just once.
+# More info at https://github.com/loqusion/hyprshade
+
+# Note: Screenshot will be affected by screen shaders too,
+# but there're some workarounds: https://github.com/loqusion/hyprshade/issues/22
+
+[[shades]]
+name = "vibrance"
+default = true
+
+[[shades]]
+name = "mono"
+start_time = 22:30:00
+end_time = 06:30:00
