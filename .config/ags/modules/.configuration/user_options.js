@@ -10,7 +10,7 @@ let configOptions = {
         'enhancements': true,
         'useHistory': true,
         'writingCursor': " ...", // Warning: Using weird characters can mess up Markdown rendering
-        'proxyUrl': '', // Can be "socks5://127.0.0.1:9050" or "http://127.0.0.1:8080" for example. Leave it blank if you don't need it.
+        'proxyUrl': null, // Can be "socks5://127.0.0.1:9050" or "http://127.0.0.1:8080" for example. Leave it blank if you don't need it.
     },
     'animations': {
         'choreographyDelay': 35,
@@ -21,6 +21,7 @@ let configOptions = {
         'keyboardUseFlag': false, // Use flag emoji instead of abbreviation letters
         'layerSmoke': false,
         'layerSmokeStrength': 0.2,
+        'fakeScreenRounding': true,
     },
     'apps': {
         'bluetooth': "blueberry",
@@ -75,8 +76,34 @@ let configOptions = {
     'workspaces': {
         'shown': 10,
     },
+    'dock': {
+        'enabled': false,
+        'hiddenThickness': 5,
+        'pinnedApps': ['firefox', 'org.gnome.Nautilus'],
+        'layer': 'top',
+        'monitorExclusivity': true, // Dock will move to other monitor along with focus if enabled
+        'searchPinnedAppIcons': false, // Try to search for the correct icon if the app class isn't an icon name
+        'trigger': ['client-added', 'client-removed'], // client_added, client_move, workspace_active, client_active
+        // Automatically hide dock after `interval` ms since trigger
+        'autoHide': [
+            {
+                'trigger': 'client-added',
+                'interval': 500,
+            },
+            {
+                'trigger': 'client-removed',
+                'interval': 500,
+            },
+        ],
+    },
     // Longer stuff
     'icons': {
+        // Find the window's icon by its class with levenshteinDistance
+        // The file names are processed at startup, so if there
+        // are too many files in the search path it'll affect performance
+        // Example: ['/usr/share/icons/Tela-nord/scalable/apps']
+        'searchPaths': [''],
+
         substitutions: {
             'code-url-handler': "visual-studio-code",
             'Code': "visual-studio-code",
@@ -112,6 +139,10 @@ let configOptions = {
             'nextTab': "Ctrl+Page_Down",
             'prevTab': "Ctrl+Page_Up",
         },
+        'cheatsheet': {
+            'nextTab': "Page_Down",
+            'prevTab': "Page_Up",
+        }
     },
 }
 

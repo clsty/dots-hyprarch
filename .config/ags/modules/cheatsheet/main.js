@@ -1,8 +1,23 @@
-const { Gtk } = imports.gi;
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 import { setupCursorHover } from "../.widgetutils/cursorhover.js";
 import PopupWindow from '../.widgethacks/popupwindow.js';
 import Keybinds from "./keybinds.js";
+import PeriodicTable from "./periodictable.js";
+import { ExpandingIconTabContainer } from '../.commonwidgets/tabcontainer.js';
+import { checkKeybind } from '../.widgetutils/keybind.js';
+
+const cheatsheets = [
+    {
+        name: 'Keybinds',
+        materialIcon: 'keyboard',
+        contentWidget: Keybinds(),
+    },
+    {
+        name: 'Periodic table',
+        materialIcon: 'experiment',
+        contentWidget: PeriodicTable(),
+    },
+];
 
 const CheatsheetHeader = () => Widget.CenterBox({
     vertical: false,
@@ -24,7 +39,7 @@ const CheatsheetHeader = () => Widget.CenterBox({
                     Widget.Label({
                         vpack: 'center',
                         className: "cheatsheet-key txt-small",
-                        label: "",
+                        label: "󰖳",
                     }),
                     Widget.Label({
                         vpack: 'center',
@@ -48,13 +63,6 @@ const CheatsheetHeader = () => Widget.CenterBox({
                     })
                 ]
             }),
-            Widget.Label({
-                useMarkup: true,
-                selectable: true,
-                justify: Gtk.Justification.CENTER,
-                className: 'txt-small txt',
-                label: 'Sheet data: <tt>~/.config/ags/modules/cheatsheet/data_keybinds.js</tt>        Keybinds config: <tt>~/.config/hypr/hyprland/keybinds.conf</tt>\n<tt>s-</tt> for super, <tt>A-</tt> for Alt, <tt>S-</tt> for Shift, <tt>C-</tt> for Control        <tt>hjkl</tt> representing ←↓↑→ directions like vim'
-            }),
         ]
     }),
     endWidget: Widget.Button({
@@ -62,7 +70,7 @@ const CheatsheetHeader = () => Widget.CenterBox({
         hpack: 'end',
         className: "cheatsheet-closebtn icon-material txt txt-hugeass",
         onClicked: () => {
-            App.toggleWindow('cheatsheet');
+            closeWindowOnAllMonitors('cheatsheet');
         },
         child: Widget.Label({
             className: 'icon-material txt txt-hugeass',
@@ -70,6 +78,19 @@ const CheatsheetHeader = () => Widget.CenterBox({
         }),
         setup: setupCursorHover,
     }),
+});
+
+export const sheetContent = ExpandingIconTabContainer({
+    tabsHpack: 'center',
+    tabSwitcherClassName: 'sidebar-icontabswitcher',
+    transitionDuration: userOptions.animations.durationLarge * 1.4,
+    icons: cheatsheets.map((api) => api.materialIcon),
+    names: cheatsheets.map((api) => api.name),
+    children: cheatsheets.map((api) => api.contentWidget),
+    onChange: (self, id) => {
+        self.shown = cheatsheets[id].name;
+        if (cheatsheets[id].onFocus) cheatsheets[id].onFocus();
+    }
 });
 
 export default (id) => PopupWindow({
@@ -82,12 +103,18 @@ export default (id) => PopupWindow({
         children: [
             Widget.Box({
                 vertical: true,
-                className: "cheatsheet-bg spacing-v-15",
+                className: "cheatsheet-bg spacing-v-5",
                 children: [
                     CheatsheetHeader(),
-                    Keybinds(),
+                    sheetContent,
                 ]
             }),
         ],
+        setup: (self) => self.on('key-press-event', (widget, event) => { // Typing
+            if (checkKeybind(event, userOptions.keybinds.cheatsheet.nextTab))
+                sheetContent.nextTab();
+            else if (checkKeybind(event, userOptions.keybinds.cheatsheet.prevTab))
+                sheetContent.prevTab();
+        })
     })
 });
