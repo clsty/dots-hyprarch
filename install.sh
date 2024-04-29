@@ -116,7 +116,6 @@ case $SKIP_PYMYC_AUR in
     ;;
 esac
 
-
 ## Optional dependencies
 if pacman -Qs ^plasma-browser-integration$ ;then SKIP_PLASMAINTG=true;fi
 case $SKIP_PLASMAINTG in
