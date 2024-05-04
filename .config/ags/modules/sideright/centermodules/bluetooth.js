@@ -129,13 +129,26 @@ export default (props) => {
             self.shown = (Bluetooth.devices.length > 0 ? 'list' : 'empty')
         }),
     })
+    const bottomBar = Box({
+        homogeneous: true,
+        children: [Button({
+            hpack: 'center',
+            className: 'txt-small txt sidebar-centermodules-bottombar-button',
+            onClicked: () => {
+                execAsync(userOptions.apps.bluetooth).catch(print);
+                closeEverything();
+            },
+            label: 'More',
+            setup: setupCursorHover,
+        })],
+    })
     return Box({
         ...props,
         className: 'spacing-v-5',
         vertical: true,
         children: [
             mainContent,
-            // status,
+            bottomBar
         ]
     });
 }

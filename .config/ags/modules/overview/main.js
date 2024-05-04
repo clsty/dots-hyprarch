@@ -5,9 +5,9 @@ import PopupWindow from '../.widgethacks/popupwindow.js';
 export default (id = '') => PopupWindow({
     name: `overview${id}`,
     // exclusivity: 'ignore',
-    keymode: 'exclusive',
+    keymode: 'on-demand',
     visible: false,
-    anchor: ['top', 'bottom'],
+    anchor: ['top'],
     layer: 'overlay',
     child: Widget.Box({
         vertical: true,

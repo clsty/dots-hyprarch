@@ -35,7 +35,7 @@ fi
 `Super`+`Shift`+`/` to open cheatsheet to see a list of keybinds.
 > TODO: write cheatsheet in comments in `hypr/keybinds.conf` and use script to generate `ags/data/keybinds.js` from it
 
-Tilix is the default terminal, it stores configs in dconf.
+Tilix is one of the terminal, it stores configs in dconf.
 Use `.local/bin/tilix-dconf` to load/dump the Tilix config stored in dconf from/to the file `.config/Tilix.dconf`.
 
 ## Credits
