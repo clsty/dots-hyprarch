@@ -19,11 +19,18 @@ const USER_CACHE_DIR = GLib.get_user_cache_dir();
 Utils.exec(`bash -c 'mkdir -p ${USER_CACHE_DIR}/ags/media/waifus'`);
 Utils.exec(`bash -c 'rm ${USER_CACHE_DIR}/ags/media/waifus/*'`);
 
-const CommandButton = (command) => Button({
+const TagButton = (command) => Button({
+    className: 'sidebar-chat-chip sidebar-chat-chip-action txt txt-small',
+    onClicked: () => { chatEntry.buffer.text += `${command} ` },
+    setup: setupCursorHover,
+    label: command,
+});
+
+const CommandButton = (command, displayName = command) => Button({
     className: 'sidebar-chat-chip sidebar-chat-chip-action txt txt-small',
     onClicked: () => sendMessage(command),
     setup: setupCursorHover,
-    label: command,
+    label: displayName,
 });
 
 export const booruTabIcon = Box({
@@ -271,7 +278,7 @@ const BooruPage = (taglist, serviceName = 'Booru') => {
                             hpack: 'fill',
                             className: 'spacing-h-5',
                             children: [
-                                ...taglist.map((tag) => CommandButton(tag)),
+                                ...taglist.map((tag) => TagButton(tag)),
                                 Box({ hexpand: true }),
                             ]
                         })
@@ -282,7 +289,7 @@ const BooruPage = (taglist, serviceName = 'Booru') => {
     });
     const pageImages = Box({
         homogeneous: true,
-        className: 'sidebar-booru-imagegrid',
+        className: 'sidebar-booru-imagegrid margin-top-5',
     })
     const pageImageRevealer = Revealer({
         transition: 'slide_down',
@@ -343,7 +350,6 @@ const BooruPage = (taglist, serviceName = 'Booru') => {
         },
         children: [Box({
             vertical: true,
-            className: 'spacing-v-5',
             children: [
                 pageHeading,
                 Box({
@@ -421,8 +427,8 @@ const booruTags = Revealer({
                 child: Box({
                     className: 'spacing-h-5',
                     children: [
-                        CommandButton('*'),
-                        CommandButton('hololive'),
+                        TagButton('( * )'),
+                        TagButton('hololive'),
                     ]
                 })
             }),
@@ -435,6 +441,7 @@ export const booruCommands = Box({
     className: 'spacing-h-5',
     setup: (self) => {
         self.pack_end(CommandButton('/clear'), false, false, 0);
+        self.pack_end(CommandButton('/next'), false, false, 0);
         self.pack_start(Button({
             className: 'sidebar-chat-chip-toggle',
             setup: setupCursorHover,
@@ -456,7 +463,11 @@ const clearChat = () => { // destroy!!
 
 export const sendMessage = (text) => {
     // Commands
-    if (text.startsWith('/')) {
+    if (text.startsWith('+')) { // Next page
+        const lastQuery = BooruService.queries.at(-1);
+        BooruService.fetch(`${lastQuery.realTagList.join(' ')} ${lastQuery.page + 1}`)
+    }
+    else if (text.startsWith('/')) {
         if (text.startsWith('/clear')) clearChat();
         else if (text.startsWith('/safe')) {
             BooruService.nsfw = false;
@@ -479,6 +490,9 @@ export const sendMessage = (text) => {
             booruContent.add(message);
             booruContent.show_all();
             booruContent.attribute.map.set(Date.now(), message);
+        }
+        else if (text.startsWith('/next')) {
+            sendMessage('+')
         }
     }
     else BooruService.fetch(text);

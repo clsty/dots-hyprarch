@@ -13,10 +13,11 @@ import {
     ModuleReloadIcon,
     ModuleSettingsIcon,
     ModulePowerIcon,
-    ModuleRawInput
+    ModuleRawInput,
+    ModuleCloudflareWarp
 } from "./quicktoggles.js";
 import ModuleNotificationList from "./centermodules/notificationlist.js";
-import ModuleVolumeMixer from "./centermodules/volumemixer.js";
+import ModuleAudioControls from "./centermodules/audiocontrols.js";
 import ModuleWifiNetworks from "./centermodules/wifinetworks.js";
 import ModuleBluetooth from "./centermodules/bluetooth.js";
 import ModuleConfigure from "./centermodules/configure.js";
@@ -33,9 +34,9 @@ const centerWidgets = [
         contentWidget: ModuleNotificationList(),
     },
     {
-        name: 'Volume mixer',
+        name: 'Audio controls',
         materialIcon: 'volume_up',
-        contentWidget: ModuleVolumeMixer(),
+        contentWidget: ModuleAudioControls(),
     },
     {
         name: 'Bluetooth',
@@ -84,15 +85,16 @@ const timeRow = Box({
 
 const togglesBox = Widget.Box({
     hpack: 'center',
-    className: 'sidebar-togglesbox spacing-h-10',
+    className: 'sidebar-togglesbox spacing-h-5',
     children: [
         ToggleIconWifi(),
         ToggleIconBluetooth(),
         await ModuleRawInput(),
         await HyprToggleIcon('touchpad_mouse', 'No touchpad while typing', 'input:touchpad:disable_while_typing', {}),
-        ModuleNightLight(),
+        await ModuleNightLight(),
         await ModuleInvertColors(),
         ModuleIdleInhibitor(),
+        await ModuleCloudflareWarp(),
     ]
 })
 
